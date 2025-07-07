@@ -1,0 +1,32 @@
+name: kmasset_aplikasi # Nama proyek baru
+description: A new Flutter project for KMAsset.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.5 <4.0.0' # Sesuaikan versi SDK jika Anda menggunakan yang berbeda
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  mobile_scanner: ^4.0.0 # Tambahkan dependency ini
+  url_launcher: ^6.3.0 # <<<--- PASTIKAN BARIS INI ADA DAN INDENTASINYA BENAR
+  image_picker: ^1.0.7
+  sensors_plus: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  # Untuk menambahkan aset ke aplikasi Anda, tambahkan entri aset di sini.
+  # Pastikan indentasi yang tepat (2 spasi setelah 'assets:').
+  assets:
+    - assets/images/logo_pnj.png # Pastikan ini mengarah ke gambar Anda
