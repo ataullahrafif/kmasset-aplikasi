@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/employee_data.dart';
 import 'utils/priority_utils.dart';
 import 'widgets/modern_appbar.dart';
+import 'package:kmasset_aplikasi/history_ticket_page.dart';
 
 class FormPengajuanTiketPage extends StatefulWidget {
   const FormPengajuanTiketPage({super.key});
@@ -204,8 +205,12 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                       const SizedBox(width: 12),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const HistoryTicketPage()),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 9, 57, 81),

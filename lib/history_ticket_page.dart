@@ -4,8 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'package:kmasset_aplikasi/employee_data.dart';
-import 'package:kmasset_aplikasi/main.dart';
 import 'utils/priority_utils.dart';
 import 'widgets/modern_appbar.dart';
 
@@ -24,119 +24,8 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
   String? _selectedStatus;
   String? _selectedPriority;
 
-  // Data dummy (contoh) untuk daftar tiket
-  final List<Map<String, dynamic>> _tickets = [
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-001',
-      'unit': 'Radiologi',
-      'lokasi': 'Gedung A - Lantai 1',
-      'klarifikasi_tiket': 'Perbaikan Alat X-Ray Rusak',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM001',
-      'status': 'Pending',
-      'prioritas': 'High',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-002',
-      'unit': 'Laboratorium',
-      'lokasi': 'Gedung A - Lantai 2',
-      'klarifikasi_tiket': 'Kalibrasi Mikroskop',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM002',
-      'status': 'Selesai',
-      'prioritas': 'Medium',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-003',
-      'unit': 'UGD',
-      'lokasi': 'Gedung B - Lantai 1',
-      'klarifikasi_tiket': 'Penggantian Lampu Ruangan',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM003',
-      'status': 'Pending',
-      'prioritas': 'Low',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-004',
-      'unit': 'ICU',
-      'lokasi': 'Gedung B - Lantai 2',
-      'klarifikasi_tiket': 'Maintenance Rutin Ventilator',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM004',
-      'status': 'Selesai',
-      'prioritas': 'Critical',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-005',
-      'unit': 'Farmasi',
-      'lokasi': 'Gedung C - Lantai 1',
-      'klarifikasi_tiket': 'Perbaikan Kulkas Penyimpanan Obat',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM005',
-      'status': 'Pending',
-      'prioritas': 'High',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-006',
-      'unit': 'Gizi',
-      'lokasi': 'Gedung A - Lantai 1',
-      'klarifikasi_tiket': 'Servis Blender Industri',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM006',
-      'status': 'Selesai',
-      'prioritas': 'Medium',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-007',
-      'unit': 'Poli Anak',
-      'lokasi': 'Gedung A - Lantai 2',
-      'klarifikasi_tiket': 'Perbaikan AC Rusak',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM007',
-      'status': 'Pending',
-      'prioritas': 'Low',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-008',
-      'unit': 'Bedah',
-      'lokasi': 'Gedung B - Lantai 1',
-      'klarifikasi_tiket': 'Penggantian Bola Lampu Operasi',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM008',
-      'status': 'Selesai',
-      'prioritas': 'Critical',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-009',
-      'unit': 'Administrasi',
-      'lokasi': 'Gedung C - Lantai 1',
-      'klarifikasi_tiket': 'Perbaikan Printer Macet',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM009',
-      'status': 'Pending',
-      'prioritas': 'High',
-      'organisasi': EmployeeData.organization,
-    },
-    {
-      'nomor_tiket': 'TK-RSKM-20240626-010',
-      'unit': 'Kamar Mayat',
-      'lokasi': 'Gedung B - Lantai 2',
-      'klarifikasi_tiket': 'Perbaikan Lemari Pendingin',
-      'tanggal': '2024-06-26',
-      'kode_tiket': 'RSKM010',
-      'status': 'Selesai',
-      'prioritas': 'Medium',
-      'organisasi': EmployeeData.organization,
-    },
-  ];
+  // JSON data structure
+  List<Map<String, dynamic>> _tickets = [];
 
   // Filter options
   final List<String> _statusOptions = ['Semua', 'Pending', 'Selesai'];
@@ -147,6 +36,192 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
     'High',
     'Critical'
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTicketData();
+  }
+
+  // Load data dari JSON dengan perulangan dan percabangan
+  void _loadTicketData() {
+    // JSON data yang kompleks
+    const String jsonString = '''
+    {
+      "departments": [
+        {
+          "name": "Radiologi",
+          "tickets": [
+            {
+              "nomor_tiket": "TK-RSKM-20240626-001",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung A - Lantai 1",
+              "judul_tiket": "Perbaikan Alat X-Ray",
+              "klarifikasi_tiket": "Perbaikan Alat X-Ray Rusak",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM001",
+              "status": "Pending",
+              "prioritas": "Medium"
+            },
+            {
+              "nomor_tiket": "TK-RSKM-20240626-002",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung A - Lantai 2",
+              "judul_tiket": "Kalibrasi Mikroskop",
+              "klarifikasi_tiket": "Kalibrasi Mikroskop Laboratorium",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM002",
+              "status": "Selesai",
+              "prioritas": "Medium"
+            }
+          ]
+        },
+        {
+          "name": "UGD",
+          "tickets": [
+            {
+              "nomor_tiket": "TK-RSKM-20240626-003",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung B - Lantai 1",
+              "judul_tiket": "Penggantian Lampu",
+              "klarifikasi_tiket": "Penggantian Lampu Ruangan UGD",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM003",
+              "status": "Pending",
+              "prioritas": "Low"
+            },
+            {
+              "nomor_tiket": "TK-RSKM-20240626-004",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung B - Lantai 2",
+              "judul_tiket": "Maintenance Ventilator",
+              "klarifikasi_tiket": "Maintenance Rutin Ventilator ICU",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM004",
+              "status": "Selesai",
+              "prioritas": "Critical"
+            }
+          ]
+        },
+        {
+          "name": "Farmasi",
+          "tickets": [
+            {
+              "nomor_tiket": "TK-RSKM-20240626-005",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung C - Lantai 1",
+              "judul_tiket": "Perbaikan Kulkas",
+              "klarifikasi_tiket": "Perbaikan Kulkas Penyimpanan Obat Farmasi",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM005",
+              "status": "Pending",
+              "prioritas": "High"
+            },
+            {
+              "nomor_tiket": "TK-RSKM-20240626-006",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung A - Lantai 1",
+              "judul_tiket": "Servis Blender",
+              "klarifikasi_tiket": "Servis Blender Industri Gizi",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM006",
+              "status": "Selesai",
+              "prioritas": "Medium"
+            }
+          ]
+        },
+        {
+          "name": "Poli",
+          "tickets": [
+            {
+              "nomor_tiket": "TK-RSKM-20240626-007",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung A - Lantai 2",
+              "judul_tiket": "Perbaikan AC",
+              "klarifikasi_tiket": "Perbaikan AC Rusak Poli Anak",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM007",
+              "status": "Pending",
+              "prioritas": "Low"
+            },
+            {
+              "nomor_tiket": "TK-RSKM-20240626-008",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung B - Lantai 1",
+              "judul_tiket": "Penggantian Lampu Operasi",
+              "klarifikasi_tiket": "Penggantian Bola Lampu Operasi Bedah",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM008",
+              "status": "Selesai",
+              "prioritas": "Critical"
+            }
+          ]
+        },
+        {
+          "name": "Administrasi",
+          "tickets": [
+            {
+              "nomor_tiket": "TK-RSKM-20240626-009",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung C - Lantai 1",
+              "judul_tiket": "Perbaikan Printer",
+              "klarifikasi_tiket": "Perbaikan Printer Macet Administrasi",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM009",
+              "status": "Pending",
+              "prioritas": "High"
+            },
+            {
+              "nomor_tiket": "TK-RSKM-20240626-010",
+              "pusat_kendali": "${EmployeeData.organization}",
+              "lokasi": "Gedung B - Lantai 2",
+              "judul_tiket": "Perbaikan Lemari Pendingin",
+              "klarifikasi_tiket": "Perbaikan Lemari Pendingin Kamar Mayat",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM010",
+              "status": "Selesai",
+              "prioritas": "Medium"
+            }
+          ]
+        }
+      ]
+    }
+    ''';
+
+    try {
+      final Map<String, dynamic> jsonData = json.decode(jsonString);
+
+      // PERULANGAN dengan PERCABANGAN di dalamnya
+      for (var department in jsonData['departments']) {
+        // Percabangan: Cek apakah department memiliki tickets
+        if (department['tickets'] != null && department['tickets'].isNotEmpty) {
+          // Perulangan: Loop melalui setiap ticket dalam department
+          for (var ticket in department['tickets']) {
+            // Percabangan: Cek apakah ticket memiliki data yang valid
+            if (ticket['nomor_tiket'] != null &&
+                ticket['status'] != null &&
+                ticket['prioritas'] != null) {
+              // Percabangan: Validasi status ticket
+              if (ticket['status'] == 'Pending' ||
+                  ticket['status'] == 'Selesai') {
+                // Percabangan: Validasi prioritas ticket
+                if (ticket['prioritas'] == 'Low' ||
+                    ticket['prioritas'] == 'Medium' ||
+                    ticket['prioritas'] == 'High' ||
+                    ticket['prioritas'] == 'Critical') {
+                  _tickets.add(ticket);
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // Jika error parsing JSON, fallback ke data kosong
+      _tickets = [];
+    }
+    setState(() {});
+  }
 
   // Filter tickets berdasarkan pencarian dan filter
   List<Map<String, dynamic>> get _filteredTickets {
@@ -444,7 +519,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                                           const SizedBox(width: 4),
                                           Expanded(
                                             child: Text(
-                                              '${ticket['unit']} - ${ticket['lokasi']}',
+                                              '${ticket['pusat_kendali']} - ${ticket['lokasi']}',
                                               style: TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.grey[600],
@@ -529,35 +604,20 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               ),
             ),
             const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Detail Tiket',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 9, 57, 81),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  Text(
-                    ticket['nomor_tiket'],
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+            const Text(
+              'Detail Tiket',
+              style: TextStyle(
+                color: Color.fromARGB(255, 9, 57, 81),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
           ],
         ),
         content: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Status dan Prioritas
               Row(
@@ -633,55 +693,54 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               ),
               const SizedBox(height: 20),
               // Judul Tiket
-              _buildDetailRow(
-                  'Judul Tiket',
-                  '${ticket['klarifikasi_tiket']} - ${ticket['unit']}',
-                  Icons.title),
-              // Kode Tiket
-              _buildDetailRow(
+              _buildDetailRow('Nomor Tiket', ticket['nomor_tiket'],
+                  Icons.confirmation_number),
+              _buildDetailRowWithCopy(
                   'Kode Tiket', ticket['kode_tiket'], Icons.qr_code),
+              _buildDetailRow(
+                  'Judul Tiket', ticket['judul_tiket'], Icons.title),
+              _buildDetailRow(
+                  'Pusat Kendali', ticket['pusat_kendali'], Icons.apartment),
+              _buildDetailRow('Lokasi', ticket['lokasi'], Icons.location_on),
               _buildDetailRow('Klarifikasi', ticket['klarifikasi_tiket'],
                   Icons.description),
-              _buildDetailRow('Lokasi', ticket['lokasi'], Icons.location_on),
               _buildDetailRow(
                   'Tanggal', ticket['tanggal'], Icons.calendar_today),
-              _buildDetailRow(
-                  'Pusat Kendali', ticket['organisasi'], Icons.account_balance),
             ],
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: SizedBox(
-              width: double.infinity,
-              child: Card(
-                elevation: 4,
-                color: const Color.fromARGB(255, 9, 57, 81),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.close, color: Colors.white, size: 22),
-                        SizedBox(width: 8),
-                        Text(
-                          'Tutup',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            child: Card(
+              color: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () => Navigator.of(context).pop(),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Tutup',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -693,6 +752,44 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
   }
 
   Widget _buildDetailRow(String label, String value, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: Colors.grey[600]),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRowWithCopy(String label, String value, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -726,26 +823,28 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (label == 'Kode Tiket')
-                      IconButton(
-                        icon: const Icon(Icons.copy,
-                            size: 20, color: Color.fromARGB(255, 9, 57, 81)),
-                        tooltip: 'Salin',
-                        onPressed: () async {
-                          await Clipboard.setData(ClipboardData(text: value));
-                          Navigator.of(context).pop();
-                          // Tampilkan snackbar setelah dialog tertutup
-                          Future.delayed(const Duration(milliseconds: 200), () {
-                            rootScaffoldMessengerKey.currentState?.showSnackBar(
-                              const SnackBar(
-                                content: Text('Kode tiket disalin!'),
-                                backgroundColor: Color.fromARGB(255, 9, 57, 81),
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                          });
-                        },
+                    IconButton(
+                      icon: const Icon(
+                        Icons.copy,
+                        size: 20,
+                        color: Color.fromARGB(255, 9, 57, 81),
                       ),
+                      onPressed: () async {
+                        await Clipboard.setData(ClipboardData(text: value));
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('$label disalin ke clipboard!'),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 9, 57, 81),
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      },
+                      tooltip: 'Salin $label',
+                    ),
                   ],
                 ),
               ],
