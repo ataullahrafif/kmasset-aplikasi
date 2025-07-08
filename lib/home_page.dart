@@ -17,7 +17,9 @@ import 'transition_helper.dart';
 import 'widgets/modern_appbar.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int? initialIndex;
+
+  const HomePage({super.key, this.initialIndex});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -38,6 +40,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // Set initial index jika ada argument
+    if (widget.initialIndex != null) {
+      _selectedIndex = widget.initialIndex!;
+    }
     _setGreeting();
     _widgetOptions = <Widget>[
       _buildHomePageContent(context),
