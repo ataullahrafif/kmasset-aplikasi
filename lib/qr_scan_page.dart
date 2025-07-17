@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:async';
 import 'form_pengajuan_tiket.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,11 +23,6 @@ class _QRScanPageState extends State<QRScanPage>
   bool _isScanning = true;
   bool _isLoading = false;
 
-  // Gyroscope
-  StreamSubscription? _gyroscopeSubscription;
-  double _gyroY = 0.0;
-  double _gyroX = 0.0;
-
   // Animation for scan line
   late AnimationController _animationController;
   late Animation<double> _scanLineAnimation;
@@ -36,12 +30,6 @@ class _QRScanPageState extends State<QRScanPage>
   @override
   void initState() {
     super.initState();
-    _gyroscopeSubscription = gyroscopeEvents.listen((GyroscopeEvent event) {
-      setState(() {
-        _gyroY = event.y;
-        _gyroX = event.x;
-      });
-    });
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -98,12 +86,6 @@ class _QRScanPageState extends State<QRScanPage>
           ),
           // Custom overlay
           _buildOverlay(context),
-          // Indikator gyroscope
-          Positioned(
-            top: 60,
-            right: 24,
-            child: _buildGyroIndicator(),
-          ),
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.3),
@@ -346,45 +328,6 @@ class _QRScanPageState extends State<QRScanPage>
     );
   }
 
-  Widget _buildGyroIndicator() {
-    // Jika device terlalu miring, tampilkan warning
-    bool isStable = _gyroY.abs() < 0.3 && _gyroX.abs() < 0.3;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-      decoration: BoxDecoration(
-        color: isStable
-            ? Colors.green.withOpacity(0.85)
-            : Colors.red.withOpacity(0.85),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: isStable
-                ? Colors.green.withOpacity(0.18)
-                : Colors.red.withOpacity(0.18),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Icon(
-            isStable ? Icons.check_circle : Icons.warning,
-            color: Colors.white,
-            size: 20,
-          ),
-          const SizedBox(width: 10),
-          Text(
-            isStable ? 'Stabil' : 'Kamera goyang',
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showScanResult(String result) {
     // Langsung navigasi ke form pengajuan tiket tanpa popup
     Navigator.push(
@@ -412,7 +355,6 @@ class _QRScanPageState extends State<QRScanPage>
   @override
   void dispose() {
     cameraController.dispose();
-    _gyroscopeSubscription?.cancel();
     _animationController.dispose();
     super.dispose();
   }

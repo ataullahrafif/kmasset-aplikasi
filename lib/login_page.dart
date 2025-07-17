@@ -147,8 +147,15 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: Image.asset(
                           'assets/images/logo_pnj.png',
-                          width: 140,
-                          height: 140,
+                          width: MediaQuery.of(context).size.width *
+                              (MediaQuery.of(context).size.width > 600
+                                  ? 0.28
+                                  : 0.35),
+                          height: MediaQuery.of(context).size.width *
+                              (MediaQuery.of(context).size.width > 600
+                                  ? 0.28
+                                  : 0.35),
+                          fit: BoxFit.contain,
                         ),
                       ),
 
@@ -173,12 +180,15 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               // Welcome text
-                              const Text(
+                              Text(
                                 'Selamat Datang di KMAsset',
                                 style: TextStyle(
-                                  fontSize: 24,
+                                  fontSize: MediaQuery.of(context).size.width *
+                                      (MediaQuery.of(context).size.width > 600
+                                          ? 0.055
+                                          : 0.06),
                                   fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 9, 57, 81),
+                                  color: const Color.fromARGB(255, 9, 57, 81),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -186,7 +196,10 @@ class _LoginPageState extends State<LoginPage> {
                               Text(
                                 'Silakan masuk ke akun Anda',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: MediaQuery.of(context).size.width *
+                                      (MediaQuery.of(context).size.width > 600
+                                          ? 0.035
+                                          : 0.04),
                                   color: Colors.grey[600],
                                 ),
                               ),

@@ -29,13 +29,24 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   String _greeting = '';
 
-  late final List<Widget> _widgetOptions;
-
   // Variabel untuk data karyawan yang akan dishare & ditampilkan di beranda/profil
   final String _employeeName = EmployeeData.employeeName;
   final String _employeeId = EmployeeData.employeeId;
   final String _organization = EmployeeData.organization;
   final String _position = EmployeeData.position;
+
+  List<Widget> get _widgetOptions => [
+        _buildHomePageContent(context),
+        const HistoryTicketPage(),
+        const QRScanPage(),
+        UserProfilePage(
+          logoutAction: _logout,
+          userName: _employeeName,
+          employeeId: _employeeId,
+          organization: _organization,
+          position: _position,
+        ),
+      ];
 
   @override
   void initState() {
@@ -45,18 +56,6 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = widget.initialIndex!;
     }
     _setGreeting();
-    _widgetOptions = <Widget>[
-      _buildHomePageContent(context),
-      const HistoryTicketPage(),
-      const QRScanPage(),
-      UserProfilePage(
-        logoutAction: _logout,
-        userName: _employeeName,
-        employeeId: _employeeId,
-        organization: _organization,
-        position: _position,
-      ),
-    ];
   }
 
   void _setGreeting() {
@@ -182,40 +181,50 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Image.asset(
                         'assets/images/logo_pnj.png',
-                        width: 100,
-                        height: 100,
+                        width: MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width > 600
+                                ? 0.28
+                                : 0.24),
+                        height: MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width > 600
+                                ? 0.28
+                                : 0.24),
                         color: Colors.white,
+                        fit: BoxFit.contain,
                       ),
                     ),
                     const SizedBox(width: 20),
                     // Text di sebelah kanan
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             'Selamat Datang di',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 20, // sebelumnya 16
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             'KMAsset',
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: MediaQuery.of(context).size.width *
+                                  (MediaQuery.of(context).size.width > 600
+                                      ? 0.10 // sebelumnya 0.07
+                                      : 0.07), // sebelumnya 0.05
                               fontWeight: FontWeight.bold,
                               color: Colors.yellow,
                               letterSpacing: 1,
                             ),
                           ),
-                          SizedBox(height: 8),
-                          Text(
+                          const SizedBox(height: 8),
+                          const Text(
                             'Sistem Manajemen Aset Rumah Sakit',
                             style: TextStyle(
-                              fontSize: 13,
+                              fontSize: 16, // sebelumnya 13
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                             ),
@@ -1236,10 +1245,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     const SizedBox(height: 25),
                     _buildClickableInfoRow(
                       'Website',
-                      'rskm.ihc.id',
+                      'krakataumedika.com',
                       icon: Icons.language,
                       onTap: () async {
-                        final Uri url = Uri.parse('https://rskm.ihc.id/');
+                        final Uri url =
+                            Uri.parse('https://krakataumedika.com/');
                         if (await canLaunchUrl(url)) {
                           await launchUrl(url,
                               mode: LaunchMode.externalApplication);

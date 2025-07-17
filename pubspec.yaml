@@ -1,33 +1,46 @@
-name: kmasset_aplikasi # Nama proyek baru
+name: kmasset_aplikasi
 description: A new Flutter project for KMAsset.
-
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
+publish_to: none
 version: 1.0.0+1
-
 environment:
-  sdk: '>=3.0.5 <4.0.0' # Sesuaikan versi SDK jika Anda menggunakan yang berbeda
-
+  sdk: ">=3.0.5 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  mobile_scanner: ^4.0.0 # Tambahkan dependency ini
-  url_launcher: ^6.3.0 # <<<--- PASTIKAN BARIS INI ADA DAN INDENTASINYA BENAR
+  mobile_scanner: ^4.0.0
+  url_launcher: ^6.3.0
   image_picker: ^1.0.7
   sensors_plus: ^3.0.0
   shared_preferences: ^2.2.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-
+  flutter_launcher_icons: ^0.13.1
 flutter:
   uses-material-design: true
-  # Untuk menambahkan aset ke aplikasi Anda, tambahkan entri aset di sini.
-  # Pastikan indentasi yang tepat (2 spasi setelah 'assets:').
   assets:
-    - assets/images/logo_pnj.png # Pastikan ini mengarah ke gambar Anda
+    - assets/images/logo_pnj.png
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo baru.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#0175C2"
+  adaptive_icon_foreground: "assets/images/logo baru.png"
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/images/logo baru.png"
+    background_color: "#0175C2"
+    theme_color: "#0175C2"
+  windows:
+    generate: true
+    image_path: "assets/images/logo baru.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/images/logo baru.png" 

@@ -20,17 +20,24 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  // Filter variables
-  String? _selectedStatus;
-  String? _selectedPriority;
-  String? _selectedLocation;
-
   // JSON data structure
   List<Map<String, dynamic>> _tickets = [];
   List<Map<String, dynamic>> _filteredTickets = [];
 
+  // Filter variables
+  String? _selectedStatus;
+  String? _selectedPriority;
+  // String? _selectedLocation; // Dihapus
+
   // Filter options
-  final List<String> _statusOptions = ['Semua', 'Pending', 'Selesai'];
+  final List<String> _statusOptions = [
+    'Semua',
+    'Reject',
+    'Request',
+    'Open',
+    'Pending',
+    'Closed'
+  ];
   final List<String> _priorityOptions = [
     'Semua',
     'Low',
@@ -38,16 +45,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
     'High',
     'Critical'
   ];
-
-  final List<String> _locationOptions = [
-    'Semua',
-    'Gedung A - Lantai 1',
-    'Gedung A - Lantai 2',
-    'Gedung B - Lantai 1',
-    'Gedung B - Lantai 2',
-    'Gedung C - Lantai 1',
-  ];
-
+  // final List<String> _locationOptions = [ ... ]; // Dihapus
   bool _showAdvancedFilters = false;
 
   @override
@@ -81,7 +79,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Perbaikan Alat X-Ray Rusak",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM001",
-              "status": "Pending",
+              "status": "Open",
               "prioritas": "Medium"
             },
             {
@@ -92,7 +90,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Kalibrasi Mikroskop Laboratorium",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM002",
-              "status": "Selesai",
+              "status": "Closed",
               "prioritas": "Medium"
             }
           ]
@@ -108,7 +106,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Penggantian Lampu Ruangan UGD",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM003",
-              "status": "Pending",
+              "status": "Request",
               "prioritas": "Low"
             },
             {
@@ -119,7 +117,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Maintenance Rutin Ventilator ICU",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM004",
-              "status": "Selesai",
+              "status": "Request",
               "prioritas": "Critical"
             }
           ]
@@ -135,7 +133,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Perbaikan Kulkas Penyimpanan Obat Farmasi",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM005",
-              "status": "Pending",
+              "status": "Closed",
               "prioritas": "High"
             },
             {
@@ -146,7 +144,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Servis Blender Industri Gizi",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM006",
-              "status": "Selesai",
+              "status": "Open",
               "prioritas": "Medium"
             }
           ]
@@ -162,7 +160,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Perbaikan AC Rusak Poli Anak",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM007",
-              "status": "Pending",
+              "status": "Reject",
               "prioritas": "Low"
             },
             {
@@ -173,7 +171,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Penggantian Bola Lampu Operasi Bedah",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM008",
-              "status": "Selesai",
+              "status": "Pending",
               "prioritas": "Critical"
             }
           ]
@@ -189,7 +187,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Perbaikan Printer Macet Administrasi",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM009",
-              "status": "Pending",
+              "status": "Reject",
               "prioritas": "High"
             },
             {
@@ -200,7 +198,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "klarifikasi_tiket": "Perbaikan Lemari Pendingin Kamar Mayat",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM010",
-              "status": "Selesai",
+              "status": "Pending",
               "prioritas": "Medium"
             }
           ]
@@ -249,29 +247,18 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               ticket['status'].toString().toLowerCase().contains(query) ||
               ticket['nomor_tiket'].toString().toLowerCase().contains(query);
         }
-
         // Status filter
         bool matchesStatus = true;
         if (_selectedStatus != null && _selectedStatus != 'Semua') {
           matchesStatus = ticket['status'] == _selectedStatus;
         }
-
         // Priority filter
         bool matchesPriority = true;
         if (_selectedPriority != null && _selectedPriority != 'Semua') {
           matchesPriority = ticket['prioritas'] == _selectedPriority;
         }
-
-        // Location filter
-        bool matchesLocation = true;
-        if (_selectedLocation != null && _selectedLocation != 'Semua') {
-          matchesLocation = ticket['lokasi'] == _selectedLocation;
-        }
-
-        return matchesSearch &&
-            matchesStatus &&
-            matchesPriority &&
-            matchesLocation;
+        // Location filter dihapus
+        return matchesSearch && matchesStatus && matchesPriority;
       }).toList();
     });
   }
@@ -281,7 +268,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
       _searchQuery = '';
       _selectedStatus = null;
       _selectedPriority = null;
-      _selectedLocation = null;
+      // _selectedLocation = null; // Dihapus
       _searchController.clear();
     });
     _applyFilters();
@@ -338,7 +325,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
                 // Filter Toggle Button
                 Row(
                   children: [
@@ -379,7 +365,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                     ),
                   ],
                 ),
-
                 // Advanced Filters
                 if (_showAdvancedFilters) ...[
                   const SizedBox(height: 16),
@@ -438,30 +423,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  DropdownButtonFormField<String>(
-                    value: _selectedLocation,
-                    decoration: InputDecoration(
-                      labelText: 'Lokasi',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                    ),
-                    items: _locationOptions.map((location) {
-                      return DropdownMenuItem<String>(
-                        value: location == 'Semua' ? null : location,
-                        child: Text(location),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedLocation = value;
-                      });
-                      _applyFilters();
-                    },
-                  ),
+                  // Dropdown lokasi dihapus
                 ],
               ],
             ),
@@ -516,7 +478,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Coba ubah filter atau kata kunci pencarian',
+                          'Coba ubah kata kunci pencarian',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[500],
@@ -541,9 +503,22 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
 
   Widget _buildTicketCard(Map<String, dynamic> ticket) {
     final priorityColor = priorityColorMap[ticket['prioritas']] ?? Colors.grey;
-    final statusColor = ticket['status'] == 'Selesai'
-        ? const Color.fromARGB(255, 16, 91, 16)
-        : const Color.fromARGB(255, 255, 152, 0);
+    final statusColor = () {
+      switch (ticket['status']) {
+        case 'Reject':
+          return const Color(0xFFE53935); // Merah
+        case 'Request':
+          return const Color(0xFF1E88E5); // Biru muda
+        case 'Open':
+          return const Color(0xFF3949AB); // Biru tua
+        case 'Pending':
+          return const Color(0xFFFF9800); // Oranye
+        case 'Closed':
+          return const Color(0xFF388E3C); // Hijau
+        default:
+          return Colors.grey;
+      }
+    }();
 
     return GestureDetector(
       onTap: () => _showTicketDetails(ticket),
@@ -685,9 +660,38 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
 
   void _showTicketDetails(Map<String, dynamic> ticket) {
     final priorityColor = priorityColorMap[ticket['prioritas']] ?? Colors.grey;
-    final statusColor = ticket['status'] == 'Selesai'
-        ? const Color.fromARGB(255, 16, 91, 16)
-        : const Color.fromARGB(255, 255, 152, 0);
+    final statusColor = () {
+      switch (ticket['status']) {
+        case 'Reject':
+          return const Color(0xFFE53935); // Merah
+        case 'Request':
+          return const Color(0xFF1E88E5); // Biru muda
+        case 'Open':
+          return const Color(0xFF3949AB); // Biru tua
+        case 'Pending':
+          return const Color(0xFFFF9800); // Oranye
+        case 'Closed':
+          return const Color(0xFF388E3C); // Hijau
+        default:
+          return Colors.grey;
+      }
+    }();
+    final statusIcon = () {
+      switch (ticket['status']) {
+        case 'Reject':
+          return Icons.cancel;
+        case 'Request':
+          return Icons.add_circle;
+        case 'Open':
+          return Icons.folder_open;
+        case 'Pending':
+          return Icons.schedule;
+        case 'Closed':
+          return Icons.check_circle;
+        default:
+          return Icons.info;
+      }
+    }();
 
     showDialog(
       context: context,
@@ -773,9 +777,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                             child: Column(
                               children: [
                                 Icon(
-                                  ticket['status'] == 'Selesai'
-                                      ? Icons.check_circle
-                                      : Icons.schedule,
+                                  statusIcon,
                                   color: statusColor,
                                   size: 24,
                                 ),

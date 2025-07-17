@@ -112,22 +112,32 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                       child: Image.asset(
                         'assets/images/logo_pnj.png',
-                        width: 140,
-                        height: 140,
+                        width: MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width > 600
+                                ? 0.28
+                                : 0.28),
+                        height: MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width > 600
+                                ? 0.28
+                                : 0.28),
+                        fit: BoxFit.contain,
                       ),
                     ),
 
                     const SizedBox(height: 40),
 
                     // App title
-                    const Text(
+                    Text(
                       'KMAsset',
                       style: TextStyle(
-                        fontSize: 36,
+                        fontSize: MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width > 600
+                                ? 0.08
+                                : 0.08),
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         letterSpacing: 2,
-                        shadows: [
+                        shadows: const [
                           Shadow(
                             offset: Offset(0, 2),
                             blurRadius: 4,
@@ -140,11 +150,14 @@ class _SplashScreenState extends State<SplashScreen> {
                     const SizedBox(height: 16),
 
                     // Subtitle
-                    const Text(
+                    Text(
                       'Sistem Manajemen Aset Rumah Sakit',
                       style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white70,
+                        fontSize: MediaQuery.of(context).size.width *
+                            (MediaQuery.of(context).size.width > 600
+                                ? 0.025
+                                : 0.04),
+                        color: Colors.white.withOpacity(0.9),
                         fontWeight: FontWeight.w500,
                       ),
                       textAlign: TextAlign.center,
