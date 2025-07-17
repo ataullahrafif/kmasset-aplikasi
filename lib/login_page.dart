@@ -5,6 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/home_page.dart';
 import 'utils/dialog_utils.dart';
+import 'utils/device_utils.dart';
+import 'utils/logo_utils.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,6 +25,16 @@ class _LoginPageState extends State<LoginPage> {
   String? _passwordErrorText;
 
   bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Set orientasi berdasarkan device type
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DeviceUtils.setOrientation(context);
+    });
+  }
 
   void _login() async {
     // Reset pesan error sebelum validasi
@@ -139,25 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Logo section
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Image.asset(
-                          'assets/images/logo_pnj.png',
-                          width: MediaQuery.of(context).size.width *
-                              (MediaQuery.of(context).size.width > 600
-                                  ? 0.28
-                                  : 0.35),
-                          height: MediaQuery.of(context).size.width *
-                              (MediaQuery.of(context).size.width > 600
-                                  ? 0.28
-                                  : 0.35),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
+                      LogoUtils.buildLoginLogo(context),
 
                       const SizedBox(height: 50),
 

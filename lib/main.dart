@@ -1,6 +1,7 @@
 // lib/main.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import untuk SystemChrome dan DeviceOrientation
 import 'package:kmasset_aplikasi/splash_screen.dart'; // Import halaman splash screen
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -8,6 +9,15 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Set orientasi default - akan diatur ulang setelah device terdeteksi
+  // Untuk sementara lock ke portrait, nanti akan diubah di SplashScreen
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(const MyApp());
 }
 

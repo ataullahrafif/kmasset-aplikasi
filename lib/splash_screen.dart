@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/login_page.dart';
+import 'package:kmasset_aplikasi/utils/device_utils.dart';
+import 'package:kmasset_aplikasi/utils/logo_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,6 +18,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Set orientasi berdasarkan device type setelah widget ter-render
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setOrientation();
+    });
 
     // Navigate to login page after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
@@ -31,6 +38,11 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     });
+  }
+
+  void _setOrientation() {
+    // Set orientasi berdasarkan device type
+    DeviceUtils.setOrientation(context);
   }
 
   @override
@@ -97,32 +109,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Logo
-                    Container(
-                      padding: const EdgeInsets.all(30),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Image.asset(
-                        'assets/images/logo_pnj.png',
-                        width: MediaQuery.of(context).size.width *
-                            (MediaQuery.of(context).size.width > 600
-                                ? 0.28
-                                : 0.28),
-                        height: MediaQuery.of(context).size.width *
-                            (MediaQuery.of(context).size.width > 600
-                                ? 0.28
-                                : 0.28),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+                    LogoUtils.buildSplashLogo(context),
 
                     const SizedBox(height: 40),
 

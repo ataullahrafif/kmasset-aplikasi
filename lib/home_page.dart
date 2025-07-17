@@ -15,6 +15,8 @@ import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 import 'transition_helper.dart';
 import 'widgets/modern_appbar.dart';
+import 'utils/device_utils.dart';
+import 'utils/logo_utils.dart';
 
 class HomePage extends StatefulWidget {
   final int? initialIndex;
@@ -56,6 +58,11 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = widget.initialIndex!;
     }
     _setGreeting();
+
+    // Set orientasi berdasarkan device type
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DeviceUtils.setOrientation(context);
+    });
   }
 
   void _setGreeting() {
@@ -173,26 +180,7 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   children: [
                     // Logo di sebelah kiri
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Image.asset(
-                        'assets/images/logo_pnj.png',
-                        width: MediaQuery.of(context).size.width *
-                            (MediaQuery.of(context).size.width > 600
-                                ? 0.28
-                                : 0.24),
-                        height: MediaQuery.of(context).size.width *
-                            (MediaQuery.of(context).size.width > 600
-                                ? 0.28
-                                : 0.24),
-                        color: Colors.white,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+                    LogoUtils.buildHomePageLogo(context),
                     const SizedBox(width: 20),
                     // Text di sebelah kanan
                     Expanded(

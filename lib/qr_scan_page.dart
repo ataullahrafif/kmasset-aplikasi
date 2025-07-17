@@ -125,7 +125,14 @@ class _QRScanPageState extends State<QRScanPage>
       builder: (context, constraints) {
         final double width = constraints.maxWidth;
         final double height = constraints.maxHeight;
-        final double frameSize = width * 0.85;
+        final bool isTablet = width > 600;
+        final bool isLandscape = width > height;
+        double frameSize;
+        if (isTablet && isLandscape) {
+          frameSize = width * 0.5; // landscape tablet
+        } else {
+          frameSize = width * 0.85; // default (portrait & HP)
+        }
         final double top = (height - frameSize) / 2 + 48;
         final double left = (width - frameSize) / 2;
 

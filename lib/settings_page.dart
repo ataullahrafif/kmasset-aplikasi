@@ -204,6 +204,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           );
                         },
                       ),
+                      const Divider(height: 1, indent: 70, endIndent: 20),
                     ],
                   ),
                 ),
