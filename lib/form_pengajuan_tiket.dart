@@ -63,6 +63,16 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     {'code': 'CLS005', 'name': 'Instalasi Baru'},
   ];
 
+  // List dummy organisasi tujuan dan variabel state untuk dropdown
+  final List<Map<String, String>> _pusatKendaliOptions = [
+    {'code': 'ORG001', 'name': 'IT Support'},
+    {'code': 'ORG002', 'name': 'Logistik'},
+    {'code': 'ORG003', 'name': 'Keuangan'},
+    {'code': 'ORG004', 'name': 'Umum'},
+    {'code': 'ORG005', 'name': 'Manajemen'},
+  ];
+  String? _selectedPusatKendali;
+
   bool _isLoading = false;
   bool _hasUnsavedChanges = false;
 
@@ -80,6 +90,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     _tanggalController.text = _formatDate(_selectedDate!);
     _organisasiController.text = EmployeeData.organization;
     _karyawanController.text = EmployeeData.employeeName;
+    _selectedPusatKendali = null; // Set null agar user wajib memilih
 
     // Add listeners for auto-save
     _judulTiketController.addListener(_onFieldChanged);
@@ -247,6 +258,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                         _selectedDate = DateTime.now();
                         _tanggalController.text = _formatDate(_selectedDate!);
                         _selectedImages.clear();
+                        _selectedPusatKendali = null; // Reset pusat kendali
                       });
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -279,6 +291,11 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                           _selectedDate = DateTime.parse(draftData['tanggal']);
                           _tanggalController.text = _formatDate(_selectedDate!);
                         }
+                        _selectedPusatKendali = _pusatKendaliOptions.any(
+                                (org) =>
+                                    org['code'] == draftData['pusat_kendali'])
+                            ? draftData['pusat_kendali']
+                            : null;
                       });
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -691,12 +708,12 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Organisasi (readonly)
+                          // Organisasi saya (readonly)
                           TextFormField(
                             controller: _organisasiController,
                             readOnly: true,
                             decoration: InputDecoration(
-                              labelText: 'Pusat Kendali',
+                              labelText: 'Organisasi saya',
                               prefixIcon: const Icon(Icons.business),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -704,6 +721,37 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                               filled: true,
                               fillColor: Colors.grey[100],
                             ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Pusat Kendali (dropdown)
+                          DropdownButtonFormField<String>(
+                            value: _selectedPusatKendali,
+                            decoration: InputDecoration(
+                              labelText: 'Pusat Kendali *',
+                              prefixIcon: const Icon(Icons.account_tree),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            items: _pusatKendaliOptions.map((org) {
+                              return DropdownMenuItem<String>(
+                                value: org['code'],
+                                child: Text(org['name']!),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedPusatKendali = value;
+                              });
+                              _onFieldChanged();
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Pusat Kendali harus dipilih';
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(height: 16),
 
