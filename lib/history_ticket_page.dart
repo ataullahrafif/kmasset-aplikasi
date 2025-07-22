@@ -73,10 +73,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
           "tickets": [
             {
               "nomor_tiket": "TK-RSKM-20240626-001",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "IT Support",
               "lokasi": "Gedung A - Lantai 1",
               "judul_tiket": "Perbaikan Alat X-Ray",
               "klarifikasi_tiket": "Perbaikan Alat X-Ray Rusak",
+              "deskripsi": "Alat X-Ray tidak bisa menyala sejak kemarin. Sudah dicoba restart namun tetap gagal.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM001",
               "status": "Open",
@@ -84,10 +85,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             },
             {
               "nomor_tiket": "TK-RSKM-20240626-002",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "Logistik",
               "lokasi": "Gedung A - Lantai 2",
               "judul_tiket": "Kalibrasi Mikroskop",
               "klarifikasi_tiket": "Kalibrasi Mikroskop Laboratorium",
+              "deskripsi": "Mikroskop laboratorium perlu dikalibrasi ulang untuk hasil pengamatan yang akurat.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM002",
               "status": "Closed",
@@ -100,10 +102,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
           "tickets": [
             {
               "nomor_tiket": "TK-RSKM-20240626-003",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "Keuangan",
               "lokasi": "Gedung B - Lantai 1",
               "judul_tiket": "Penggantian Lampu",
               "klarifikasi_tiket": "Penggantian Lampu Ruangan UGD",
+              "deskripsi": "Lampu di ruangan UGD sudah mati selama beberapa hari. Perlu penggantian lampu baru.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM003",
               "status": "Request",
@@ -111,10 +114,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             },
             {
               "nomor_tiket": "TK-RSKM-20240626-004",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "Umum",
               "lokasi": "Gedung B - Lantai 2",
               "judul_tiket": "Maintenance Ventilator",
               "klarifikasi_tiket": "Maintenance Rutin Ventilator ICU",
+              "deskripsi": "Ventilator ICU perlu di maintenance rutin untuk menjaga kualitas udara dan kenyamanan pasien.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM004",
               "status": "Request",
@@ -127,10 +131,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
           "tickets": [
             {
               "nomor_tiket": "TK-RSKM-20240626-005",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "Manajemen",
               "lokasi": "Gedung C - Lantai 1",
               "judul_tiket": "Perbaikan Kulkas",
               "klarifikasi_tiket": "Perbaikan Kulkas Penyimpanan Obat Farmasi",
+              "deskripsi": "Kulkas di ruang penyimpanan obat Farmasi tidak bisa dingin. Perlu perbaikan komponen pendingin.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM005",
               "status": "Closed",
@@ -138,10 +143,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             },
             {
               "nomor_tiket": "TK-RSKM-20240626-006",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "IT Support",
               "lokasi": "Gedung A - Lantai 1",
               "judul_tiket": "Servis Blender",
               "klarifikasi_tiket": "Servis Blender Industri Gizi",
+              "deskripsi": "Blender yang digunakan untuk mencampur bahan makanan di ruang gizi perlu di servis rutin untuk menjaga kualitas produk.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM006",
               "status": "Open",
@@ -154,10 +160,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
           "tickets": [
             {
               "nomor_tiket": "TK-RSKM-20240626-007",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "Keuangan",
               "lokasi": "Gedung A - Lantai 2",
               "judul_tiket": "Perbaikan AC",
               "klarifikasi_tiket": "Perbaikan AC Rusak Poli Anak",
+              "deskripsi": "AC di ruang poli anak tidak bisa dingin. Perlu perbaikan komponen pendingin dan filter.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM007",
               "status": "Reject",
@@ -165,10 +172,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             },
             {
               "nomor_tiket": "TK-RSKM-20240626-008",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "Umum",
               "lokasi": "Gedung B - Lantai 1",
               "judul_tiket": "Penggantian Lampu Operasi",
               "klarifikasi_tiket": "Penggantian Bola Lampu Operasi Bedah",
+              "deskripsi": "Lampu operasi bedah perlu diganti karena sudah rusak dan tidak bisa menyala.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM008",
               "status": "Pending",
@@ -181,10 +189,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
           "tickets": [
             {
               "nomor_tiket": "TK-RSKM-20240626-009",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "Manajemen",
               "lokasi": "Gedung C - Lantai 1",
               "judul_tiket": "Perbaikan Printer",
               "klarifikasi_tiket": "Perbaikan Printer Macet Administrasi",
+              "deskripsi": "Printer yang digunakan untuk mencetak laporan administrasi tidak bisa mencetak. Perlu perbaikan komponen dan ink.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM009",
               "status": "Reject",
@@ -192,10 +201,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             },
             {
               "nomor_tiket": "TK-RSKM-20240626-010",
-              "pusat_kendali": "${EmployeeData.organization}",
+              "pusat_kendali": "Umum",
               "lokasi": "Gedung B - Lantai 2",
               "judul_tiket": "Perbaikan Lemari Pendingin",
               "klarifikasi_tiket": "Perbaikan Lemari Pendingin Kamar Mayat",
+              "deskripsi": "Lemari pendingin di kamar mayat perlu di perbaiki karena tidak bisa mendinginkan kamar.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM010",
               "status": "Pending",
@@ -709,218 +719,250 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                   ? MediaQuery.of(context).size.height * 0.9
                   : double.infinity,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Header
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          const Color.fromARGB(255, 9, 57, 81),
-                          const Color.fromARGB(255, 9, 57, 81).withOpacity(0.8),
-                        ],
-                      ),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
-                      ),
-                    ),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height *
+                  0.75, // Maksimal 75% tinggi layar
+              child: ScrollbarTheme(
+                data: ScrollbarThemeData(
+                  thumbColor: MaterialStateProperty.all(
+                      const Color.fromARGB(255, 9, 57, 81)),
+                  trackColor:
+                      MaterialStateProperty.all(Colors.grey.withOpacity(0.15)),
+                  trackBorderColor:
+                      MaterialStateProperty.all(Colors.transparent),
+                  radius: const Radius.circular(12),
+                  thickness: MaterialStateProperty.all(8),
+                  thumbVisibility: MaterialStateProperty.all(true),
+                  minThumbLength: 48,
+                ),
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
+                        // Header
                         Container(
-                          padding: const EdgeInsets.all(16),
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(16),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color.fromARGB(255, 9, 57, 81),
+                                const Color.fromARGB(255, 9, 57, 81)
+                                    .withOpacity(0.8),
+                              ],
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(24),
+                              topRight: Radius.circular(24),
+                            ),
                           ),
-                          child: const Icon(
-                            Icons.receipt,
-                            size: 32,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          ticket['kode_tiket'],
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          ticket['judul_tiket'],
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withOpacity(0.9),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Content
-                  Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      children: [
-                        // Status and Priority Row
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
+                          child: Column(
+                            children: [
+                              Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: statusColor.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: statusColor),
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      statusIcon,
-                                      color: statusColor,
-                                      size: 24,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Status',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: statusColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Text(
-                                      ticket['status'],
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: statusColor,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                                child: const Icon(
+                                  Icons.receipt,
+                                  size: 32,
+                                  color: Colors.white,
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: priorityColor.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: priorityColor),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.priority_high,
-                                      color: priorityColor,
-                                      size: 24,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Prioritas',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: priorityColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Text(
-                                      ticket['prioritas'],
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: priorityColor,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                              const SizedBox(height: 16),
+                              Text(
+                                ticket['kode_tiket'],
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 8),
+                              Text(
+                                ticket['judul_tiket'],
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white.withOpacity(0.9),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 24),
 
-                        // Details
-                        _buildDetailItem('Nomor Tiket', ticket['nomor_tiket'],
-                            Icons.confirmation_number),
-                        _buildDetailItem('Klasifikasi',
-                            ticket['klarifikasi_tiket'], Icons.category),
-                        _buildDetailItem(
-                            'Lokasi', ticket['lokasi'], Icons.location_on),
-                        _buildDetailItem(
-                            'Tanggal', ticket['tanggal'], Icons.calendar_today),
-                        _buildDetailItem('Pusat Kendali',
-                            ticket['pusat_kendali'], Icons.business),
-                      ],
-                    ),
-                  ),
-
-                  // Actions
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () async {
-                              await Clipboard.setData(
-                                  ClipboardData(text: ticket['kode_tiket']));
-                              if (context.mounted) {
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Kode tiket disalin ke clipboard'),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 16, 91, 16),
-                                    behavior: SnackBarBehavior.floating,
-                                    margin: EdgeInsets.all(16),
+                        // Content
+                        Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            children: [
+                              // Status and Priority Row
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: statusColor.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(color: statusColor),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            statusIcon,
+                                            color: statusColor,
+                                            size: 24,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            'Status',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: statusColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Text(
+                                            ticket['status'],
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: statusColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.copy),
-                            label: const Text('Salin Kode'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[200],
-                              foregroundColor: Colors.black87,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: priorityColor.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border:
+                                            Border.all(color: priorityColor),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.priority_high,
+                                            color: priorityColor,
+                                            size: 24,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            'Prioritas',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: priorityColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Text(
+                                            ticket['prioritas'],
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: priorityColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
+                              const SizedBox(height: 24),
+
+                              // Details
+                              _buildDetailItem(
+                                  'Nomor Tiket',
+                                  ticket['nomor_tiket'],
+                                  Icons.confirmation_number),
+                              _buildDetailItem('Klasifikasi',
+                                  ticket['klarifikasi_tiket'], Icons.category),
+                              _buildDetailItem('Lokasi', ticket['lokasi'],
+                                  Icons.location_on),
+                              _buildDetailItem('Tanggal', ticket['tanggal'],
+                                  Icons.calendar_today),
+                              _buildDetailItem('Organisasi Saya',
+                                  EmployeeData.organization, Icons.apartment),
+                              _buildDetailItem('Pusat Kendali',
+                                  ticket['pusat_kendali'], Icons.business),
+                              if (ticket['deskripsi'] != null &&
+                                  ticket['deskripsi'].toString().isNotEmpty)
+                                _buildDetailItem('Deskripsi Masalah',
+                                    ticket['deskripsi'], Icons.description),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 9, 57, 81),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+
+                        // Actions
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: () async {
+                                    await Clipboard.setData(ClipboardData(
+                                        text: ticket['kode_tiket']));
+                                    if (context.mounted) {
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Kode tiket disalin ke clipboard'),
+                                          backgroundColor:
+                                              Color.fromARGB(255, 16, 91, 16),
+                                          behavior: SnackBarBehavior.floating,
+                                          margin: EdgeInsets.all(16),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  icon: const Icon(Icons.copy),
+                                  label: const Text('Salin Kode'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey[200],
+                                    foregroundColor: Colors.black87,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: const Text('Tutup'),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 9, 57, 81),
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: const Text('Tutup'),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),
