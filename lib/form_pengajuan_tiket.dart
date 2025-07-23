@@ -20,7 +20,6 @@ class FormPengajuanTiketPage extends StatefulWidget {
 
 class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _kodeTiketController = TextEditingController();
   final TextEditingController _judulTiketController = TextEditingController();
   final TextEditingController _klasifikasiController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
@@ -84,8 +83,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   }
 
   void _initializeForm() {
-    _kodeTiketController.text =
-        'RSKM${_ticketCounter.toString().padLeft(3, '0')}';
     _selectedDate = DateTime.now();
     _tanggalController.text = _formatDate(_selectedDate!);
     _organisasiController.text = EmployeeData.organization;
@@ -394,7 +391,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   @override
   void dispose() {
     _autoSaveTimer?.cancel();
-    _kodeTiketController.dispose();
     _judulTiketController.dispose();
     _klasifikasiController.dispose();
     _deskripsiController.dispose();
@@ -501,18 +497,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Kode Tiket: ${_kodeTiketController.text}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 9, 57, 81),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                            ),
-                            const SizedBox(height: 4),
                             Text(
                               'Judul: ${_judulTiketController.text}',
                               style: const TextStyle(
@@ -650,22 +634,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Kode Tiket (readonly)
-                          TextFormField(
-                            controller: _kodeTiketController,
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: 'Kode Tiket',
-                              prefixIcon: const Icon(Icons.receipt),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
                           // Judul Tiket
                           TextFormField(
                             controller: _judulTiketController,
