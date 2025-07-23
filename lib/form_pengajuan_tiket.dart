@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/employee_data.dart';
-import 'utils/priority_utils.dart';
 import 'widgets/modern_appbar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -25,13 +24,10 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   final TextEditingController _deskripsiController = TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
   final TextEditingController _organisasiController = TextEditingController();
-  final TextEditingController _karyawanController = TextEditingController();
+  final TextEditingController _userController =
+      TextEditingController(); // Ganti dari _karyawanController
 
   DateTime? _selectedDate;
-  static const int _ticketCounter = 11;
-
-  // Priority selection
-  String? _selectedPriority = 'Medium';
 
   // Dropdown selections
   String? _selectedLocation;
@@ -86,7 +82,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     _selectedDate = DateTime.now();
     _tanggalController.text = _formatDate(_selectedDate!);
     _organisasiController.text = EmployeeData.organization;
-    _karyawanController.text = EmployeeData.employeeName;
+    _userController.text = EmployeeData.employeeName;
     _selectedPusatKendali = null; // Set null agar user wajib memilih
 
     // Add listeners for auto-save
@@ -126,7 +122,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
         'deskripsi': _deskripsiController.text,
         'lokasi': _selectedLocation,
         'klasifikasi': _selectedClassification,
-        'prioritas': _selectedPriority,
         'tanggal': _selectedDate?.toIso8601String(),
         'timestamp': DateTime.now().toIso8601String(),
       };
@@ -251,7 +246,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                         _deskripsiController.clear();
                         _selectedLocation = null;
                         _selectedClassification = null;
-                        _selectedPriority = 'Medium';
                         _selectedDate = DateTime.now();
                         _tanggalController.text = _formatDate(_selectedDate!);
                         _selectedImages.clear();
@@ -283,7 +277,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                             draftData['deskripsi'] ?? '';
                         _selectedLocation = draftData['lokasi'];
                         _selectedClassification = draftData['klasifikasi'];
-                        _selectedPriority = draftData['prioritas'] ?? 'Medium';
                         if (draftData['tanggal'] != null) {
                           _selectedDate = DateTime.parse(draftData['tanggal']);
                           _tanggalController.text = _formatDate(_selectedDate!);
@@ -396,7 +389,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     _deskripsiController.dispose();
     _tanggalController.dispose();
     _organisasiController.dispose();
-    _karyawanController.dispose();
+    _userController.dispose(); // Ganti dari _karyawanController.dispose();
     super.dispose();
   }
 
@@ -660,12 +653,12 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Karyawan (readonly)
+                          // User (readonly)
                           TextFormField(
-                            controller: _karyawanController,
+                            controller: _userController,
                             readOnly: true,
                             decoration: InputDecoration(
-                              labelText: 'Karyawan',
+                              labelText: 'User',
                               prefixIcon: const Icon(Icons.person),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -676,12 +669,12 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Organisasi saya (readonly)
+                          // Organisasi User (readonly)
                           TextFormField(
                             controller: _organisasiController,
                             readOnly: true,
                             decoration: InputDecoration(
-                              labelText: 'Organisasi saya',
+                              labelText: 'Organisasi User',
                               prefixIcon: const Icon(Icons.business),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -800,41 +793,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Prioritas
-                          const Text(
-                            'Prioritas *',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Color.fromARGB(255, 9, 57, 81),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildPriorityChip(
-                                    'Low', priorityColorMap['Low']!),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: _buildPriorityChip(
-                                    'Medium', priorityColorMap['Medium']!),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: _buildPriorityChip(
-                                    'High', priorityColorMap['High']!),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: _buildPriorityChip(
-                                    'Critical', priorityColorMap['Critical']!),
-                              ),
-                            ],
                           ),
                           const SizedBox(height: 16),
 
@@ -1032,37 +990,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
               ),
             ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildPriorityChip(String priority, Color color) {
-    final isSelected = _selectedPriority == priority;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedPriority = priority;
-        });
-        _onFieldChanged();
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? color : color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? color : color.withOpacity(0.3),
-          ),
-        ),
-        child: Text(
-          priority,
-          style: TextStyle(
-            color: isSelected ? Colors.white : color,
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-          ),
-          textAlign: TextAlign.center,
-        ),
       ),
     );
   }

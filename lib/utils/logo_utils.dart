@@ -25,7 +25,6 @@ class LogoUtils {
         logoPath,
         width: getLogoSize(context, multiplier: 0.25), // diperbesar dari 0.22
         height: getLogoSize(context, multiplier: 0.25), // diperbesar dari 0.22
-        color: Colors.white,
         fit: BoxFit.contain,
       ),
     );
