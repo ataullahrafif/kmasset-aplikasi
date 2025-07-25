@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/home_page.dart';
-import 'utils/dialog_utils.dart';
 import 'utils/device_utils.dart';
 import 'utils/logo_utils.dart';
 
@@ -53,9 +52,17 @@ class _LoginPageState extends State<LoginPage> {
       isValid = false;
     }
 
-    if (_passwordController.text.length < 3) {
+    if (_passwordController.text.length < 12) {
       setState(() {
-        _passwordErrorText = 'Password minimal 3 karakter';
+        _passwordErrorText = 'Password minimal 12 karakter';
+      });
+      isValid = false;
+    } else if (!RegExp(
+            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
+        .hasMatch(_passwordController.text)) {
+      setState(() {
+        _passwordErrorText =
+            'Password harus kombinasi huruf besar, kecil, angka, dan karakter spesial';
       });
       isValid = false;
     }
@@ -74,14 +81,13 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = false;
     });
 
-    if (_usernameController.text == 'useruser' &&
-        _passwordController.text == 'passpass') {
+    // Simulasi login: jika username dan password valid format, izinkan login
+    if (isValid) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
-    } else {
-      showErrorSnackbar(context, 'Username atau password salah!');
+      return;
     }
   }
 
@@ -308,12 +314,18 @@ class _LoginPageState extends State<LoginPage> {
                                       color: Colors.red,
                                       fontSize: 12,
                                     ),
+                                    errorMaxLines: 3,
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      if (value.length < 3) {
+                                      if (value.length < 12) {
                                         _passwordErrorText =
-                                            'Password minimal 3 karakter';
+                                            'Password minimal 12 karakter';
+                                      } else if (!RegExp(
+                                              r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
+                                          .hasMatch(value)) {
+                                        _passwordErrorText =
+                                            'Password harus kombinasi huruf besar, kecil, angka, dan karakter spesial';
                                       } else {
                                         _passwordErrorText = null;
                                       }

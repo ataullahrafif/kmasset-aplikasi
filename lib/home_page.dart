@@ -17,6 +17,7 @@ import 'transition_helper.dart';
 import 'widgets/modern_appbar.dart';
 import 'utils/device_utils.dart';
 import 'utils/logo_utils.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
   final int? initialIndex;
@@ -85,9 +86,9 @@ class _HomePageState extends State<HomePage> {
     } else if (hour < 15) {
       return Icons.wb_sunny_outlined; // Matahari siang
     } else if (hour < 18) {
-      return Icons.wb_cloudy; // Awan sore
+      return Icons.wb_sunny; // Matahari terbenam/sore (ganti dari awan)
     } else {
-      return Icons.nightlight_round; // Bulan malam
+      return Icons.nights_stay; // Malam
     }
   }
 
@@ -1245,9 +1246,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       },
                     ),
                     _buildClickableInfoRow(
+                      'Website',
+                      'rskm.ihc.id',
+                      icon: Icons.language,
+                      onTap: () async {
+                        final Uri url =
+                            Uri.parse('https://rskm.ihc.id/tentang-kami.html');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
+                        }
+                      },
+                    ),
+                    _buildClickableInfoRow(
                       'Instagram',
                       '@ihc.rskrakataumedika',
-                      icon: Icons.camera_alt,
+                      icon: FontAwesomeIcons.instagram,
                       onTap: () async {
                         final Uri url = Uri.parse(
                             'https://www.instagram.com/ihc.rskrakataumedika/');

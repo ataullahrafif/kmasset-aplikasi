@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async'; // Added for Timer
 import 'package:kmasset_aplikasi/home_page.dart'; // Added for HomePage
+import 'package:file_picker/file_picker.dart';
 
 class FormPengajuanTiketPage extends StatefulWidget {
   const FormPengajuanTiketPage({super.key});
@@ -35,6 +36,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
 
   // File upload
   final List<File> _selectedImages = [];
+  final List<File> _selectedPdfFiles = [];
   final ImagePicker _picker = ImagePicker();
 
   // Auto-save
@@ -249,6 +251,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                         _selectedDate = DateTime.now();
                         _tanggalController.text = _formatDate(_selectedDate!);
                         _selectedImages.clear();
+                        _selectedPdfFiles.clear();
                         _selectedPusatKendali = null; // Reset pusat kendali
                       });
                       if (mounted) {
@@ -377,6 +380,55 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   void _removeImage(int index) {
     setState(() {
       _selectedImages.removeAt(index);
+    });
+    _onFieldChanged();
+  }
+
+  Future<void> _pickPdfFile() async {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Fitur hanya tersedia di Android/iOS'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+        allowMultiple: false,
+      );
+      if (result != null && result.files.single.path != null) {
+        final file = File(result.files.single.path!);
+        if (file.path.toLowerCase().endsWith('.pdf')) {
+          setState(() {
+            _selectedPdfFiles.add(file);
+          });
+          _onFieldChanged();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Hanya file PDF yang diperbolehkan!'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error memilih file PDF: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _removePdfFile(int index) {
+    setState(() {
+      _selectedPdfFiles.removeAt(index);
     });
     _onFieldChanged();
   }
@@ -826,7 +878,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
 
                           // Foto Bukti
                           const Text(
-                            'Foto Bukti Kerusakan',
+                            'Unggah Foto / Document',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -851,7 +903,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: ElevatedButton.icon(
                                   onPressed: _pickImageFromGallery,
@@ -869,12 +921,29 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: _pickPdfFile,
+                              icon: const Icon(Icons.picture_as_pdf),
+                              label: const Text('PDF'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
                           const SizedBox(height: 16),
 
-                          // Display selected images
-                          if (_selectedImages.isNotEmpty) ...[
+                          // Display selected images and PDF
+                          if (_selectedImages.isNotEmpty ||
+                              _selectedPdfFiles.isNotEmpty) ...[
                             const Text(
-                              'Foto yang dipilih:',
+                              'File yang dipilih:',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -882,51 +951,92 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            SizedBox(
-                              height: 100,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _selectedImages.length,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    margin: const EdgeInsets.only(right: 8),
-                                    child: Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.file(
-                                            _selectedImages[index],
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
+                            if (_selectedImages.isNotEmpty)
+                              SizedBox(
+                                height: 100,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _selectedImages.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      margin: const EdgeInsets.only(right: 8),
+                                      child: Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Image.file(
+                                              _selectedImages[index],
+                                              width: 100,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ),
-                                        Positioned(
-                                          top: 4,
-                                          right: 4,
-                                          child: GestureDetector(
-                                            onTap: () => _removeImage(index),
-                                            child: Container(
-                                              padding: const EdgeInsets.all(4),
-                                              decoration: const BoxDecoration(
-                                                color: Colors.red,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Icon(
-                                                Icons.close,
-                                                color: Colors.white,
-                                                size: 16,
+                                          Positioned(
+                                            top: 4,
+                                            right: 4,
+                                            child: GestureDetector(
+                                              onTap: () => _removeImage(index),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(4),
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.red,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                  size: 16,
+                                                ),
                                               ),
                                             ),
                                           ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            if (_selectedPdfFiles.isNotEmpty)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(
+                                    _selectedPdfFiles.length, (index) {
+                                  final file = _selectedPdfFiles[index];
+                                  return Container(
+                                    margin: const EdgeInsets.only(bottom: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.picture_as_pdf,
+                                            color: Colors.red),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            file.path.split('/').last,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black87),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.close,
+                                              color: Colors.red, size: 18),
+                                          onPressed: () =>
+                                              _removePdfFile(index),
                                         ),
                                       ],
                                     ),
                                   );
-                                },
+                                }),
                               ),
-                            ),
                             const SizedBox(height: 16),
                           ],
 

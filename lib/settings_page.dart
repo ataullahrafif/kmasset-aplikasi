@@ -392,110 +392,118 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
       ),
       content: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Current Password
-            TextFormField(
-              controller: _currentPasswordController,
-              obscureText: !_isCurrentPasswordVisible,
-              decoration: InputDecoration(
-                labelText: 'Password Saat Ini',
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isCurrentPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Current Password
+              TextFormField(
+                controller: _currentPasswordController,
+                obscureText: !_isCurrentPasswordVisible,
+                decoration: InputDecoration(
+                  labelText: 'Password Saat Ini',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isCurrentPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isCurrentPasswordVisible = !_isCurrentPasswordVisible;
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _isCurrentPasswordVisible = !_isCurrentPasswordVisible;
-                    });
-                  },
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password saat ini harus diisi';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Password saat ini harus diisi';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // New Password
-            TextFormField(
-              controller: _newPasswordController,
-              obscureText: !_isNewPasswordVisible,
-              decoration: InputDecoration(
-                labelText: 'Password Baru',
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isNewPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+              // New Password
+              TextFormField(
+                controller: _newPasswordController,
+                obscureText: !_isNewPasswordVisible,
+                decoration: InputDecoration(
+                  labelText: 'Password Baru',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isNewPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isNewPasswordVisible = !_isNewPasswordVisible;
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _isNewPasswordVisible = !_isNewPasswordVisible;
-                    });
-                  },
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  errorMaxLines: 3,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password baru harus diisi';
+                  }
+                  if (value.length < 12) {
+                    return 'Password minimal 12 karakter';
+                  }
+                  if (!RegExp(
+                          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
+                      .hasMatch(value)) {
+                    return 'Password harus kombinasi huruf besar, kecil, angka, dan karakter spesial';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Password baru harus diisi';
-                }
-                if (value.length < 6) {
-                  return 'Password minimal 6 karakter';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Confirm Password
-            TextFormField(
-              controller: _confirmPasswordController,
-              obscureText: !_isConfirmPasswordVisible,
-              decoration: InputDecoration(
-                labelText: 'Konfirmasi Password Baru',
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isConfirmPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+              // Confirm Password
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: !_isConfirmPasswordVisible,
+                decoration: InputDecoration(
+                  labelText: 'Konfirmasi Password Baru',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isConfirmPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                    });
-                  },
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Konfirmasi password harus diisi';
+                  }
+                  if (value != _newPasswordController.text) {
+                    return 'Password tidak cocok';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Konfirmasi password harus diisi';
-                }
-                if (value != _newPasswordController.text) {
-                  return 'Password tidak cocok';
-                }
-                return null;
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       actions: [
