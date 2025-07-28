@@ -34,8 +34,9 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
     'Semua',
     'Reject',
     'Request',
-    'Open',
-    'Pending',
+    'Waiting List',
+    'On Progress',
+    'Solved',
     'Closed'
   ];
   final List<String> _priorityOptions = [
@@ -80,7 +81,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "deskripsi": "Alat X-Ray tidak bisa menyala sejak kemarin. Sudah dicoba restart namun tetap gagal.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM001",
-              "status": "Open",
+              "status": "On Progress",
               "prioritas": "Medium"
             },
             {
@@ -92,7 +93,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "deskripsi": "Mikroskop laboratorium perlu dikalibrasi ulang untuk hasil pengamatan yang akurat.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM002",
-              "status": "Closed",
+              "status": "Solved",
               "prioritas": "Medium"
             }
           ]
@@ -138,7 +139,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "deskripsi": "Kulkas di ruang penyimpanan obat Farmasi tidak bisa dingin. Perlu perbaikan komponen pendingin.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM005",
-              "status": "Closed",
+              "status": "Solved",
               "prioritas": "High"
             },
             {
@@ -150,7 +151,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "deskripsi": "Blender yang digunakan untuk mencampur bahan makanan di ruang gizi perlu di servis rutin untuk menjaga kualitas produk.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM006",
-              "status": "Open",
+              "status": "On Progress",
               "prioritas": "Medium"
             }
           ]
@@ -179,7 +180,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "deskripsi": "Lampu operasi bedah perlu diganti karena sudah rusak dan tidak bisa menyala.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM008",
-              "status": "Pending",
+              "status": "Waiting List",
               "prioritas": "Critical"
             }
           ]
@@ -208,8 +209,20 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               "deskripsi": "Lemari pendingin di kamar mayat perlu di perbaiki karena tidak bisa mendinginkan kamar.",
               "tanggal": "2024-06-26",
               "kode_tiket": "RSKM010",
-              "status": "Pending",
+              "status": "Waiting List",
               "prioritas": "Medium"
+            },
+            {
+              "nomor_tiket": "TK-RSKM-20240626-011",
+              "pusat_kendali": "IT Support",
+              "lokasi": "Gedung A - Lantai 3",
+              "judul_tiket": "Perbaikan Sistem Komputer",
+              "klarifikasi_tiket": "Perbaikan Sistem Komputer Administrasi",
+              "deskripsi": "Sistem komputer di ruang administrasi mengalami gangguan. Perlu perbaikan hardware dan software.",
+              "tanggal": "2024-06-26",
+              "kode_tiket": "RSKM011",
+              "status": "Closed",
+              "prioritas": "High"
             }
           ]
         }
@@ -244,18 +257,12 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
   void _applyFilters() {
     setState(() {
       _filteredTickets = _tickets.where((ticket) {
-        // Search filter
+        // Search filter - hanya berdasarkan kode tiket
         bool matchesSearch = true;
         if (_searchQuery.isNotEmpty) {
           final query = _searchQuery.toLowerCase();
-          matchesSearch = ticket['kode_tiket']
-                  .toString()
-                  .toLowerCase()
-                  .contains(query) ||
-              ticket['judul_tiket'].toString().toLowerCase().contains(query) ||
-              ticket['lokasi'].toString().toLowerCase().contains(query) ||
-              ticket['status'].toString().toLowerCase().contains(query) ||
-              ticket['nomor_tiket'].toString().toLowerCase().contains(query);
+          matchesSearch =
+              ticket['kode_tiket'].toString().toLowerCase().contains(query);
         }
         // Status filter
         bool matchesStatus = true;
@@ -317,7 +324,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                 TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Cari berdasarkan kode tiket, lokasi, status...',
+                    hintText: 'Cari berdasarkan kode tiket...',
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
@@ -519,12 +526,14 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
           return const Color(0xFFE53935); // Merah
         case 'Request':
           return const Color(0xFF1E88E5); // Biru muda
-        case 'Open':
-          return const Color(0xFF3949AB); // Biru tua
-        case 'Pending':
+        case 'Waiting List':
           return const Color(0xFFFF9800); // Oranye
-        case 'Closed':
+        case 'On Progress':
+          return const Color(0xFF3949AB); // Biru tua
+        case 'Solved':
           return const Color(0xFF388E3C); // Hijau
+        case 'Closed':
+          return const Color(0xFF757575); // Abu-abu
         default:
           return Colors.grey;
       }
@@ -676,12 +685,14 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
           return const Color(0xFFE53935); // Merah
         case 'Request':
           return const Color(0xFF1E88E5); // Biru muda
-        case 'Open':
-          return const Color(0xFF3949AB); // Biru tua
-        case 'Pending':
+        case 'Waiting List':
           return const Color(0xFFFF9800); // Oranye
-        case 'Closed':
+        case 'On Progress':
+          return const Color(0xFF3949AB); // Biru tua
+        case 'Solved':
           return const Color(0xFF388E3C); // Hijau
+        case 'Closed':
+          return const Color(0xFF757575); // Abu-abu
         default:
           return Colors.grey;
       }
@@ -692,12 +703,14 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
           return Icons.cancel;
         case 'Request':
           return Icons.add_circle;
-        case 'Open':
-          return Icons.folder_open;
-        case 'Pending':
+        case 'Waiting List':
           return Icons.schedule;
-        case 'Closed':
+        case 'On Progress':
+          return Icons.engineering;
+        case 'Solved':
           return Icons.check_circle;
+        case 'Closed':
+          return Icons.archive;
         default:
           return Icons.info;
       }

@@ -139,7 +139,7 @@ class LogoUtils {
     } else if (screenWidth > 600) {
       return 0.30; // Tablet - diperbesar dari 0.26
     } else {
-      return 0.28; // Mobile - diperbesar dari 0.22
+      return 0.28; // Mobile - diperbesar dari .22
     }
   }
 

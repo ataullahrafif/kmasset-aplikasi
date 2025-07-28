@@ -23,8 +23,6 @@ class _LoginPageState extends State<LoginPage> {
   String? _usernameErrorText;
   String? _passwordErrorText;
 
-  bool _rememberMe = false;
-
   @override
   void initState() {
     super.initState();
@@ -52,13 +50,13 @@ class _LoginPageState extends State<LoginPage> {
       isValid = false;
     }
 
-    if (_passwordController.text.length < 12) {
+    if (_passwordController.text.length < 8) {
       setState(() {
-        _passwordErrorText = 'Password minimal 12 karakter';
+        _passwordErrorText = 'Password minimal 8 karakter';
       });
       isValid = false;
     } else if (!RegExp(
-            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
+            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{8,}$')
         .hasMatch(_passwordController.text)) {
       setState(() {
         _passwordErrorText =
@@ -318,11 +316,11 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      if (value.length < 12) {
+                                      if (value.length < 8) {
                                         _passwordErrorText =
-                                            'Password minimal 12 karakter';
+                                            'Password minimal 8 karakter';
                                       } else if (!RegExp(
-                                              r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
+                                              r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{8,}$')
                                           .hasMatch(value)) {
                                         _passwordErrorText =
                                             'Password harus kombinasi huruf besar, kecil, angka, dan karakter spesial';
@@ -335,35 +333,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
 
                               const SizedBox(height: 30),
-
-                              // Remember Me checkbox
-                              Row(
-                                children: [
-                                  Checkbox(
-                                    value: _rememberMe,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _rememberMe = value ?? false;
-                                      });
-                                    },
-                                    activeColor:
-                                        const Color.fromARGB(255, 9, 57, 81),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  const Text(
-                                    'Ingat saya',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Color.fromARGB(255, 9, 57, 81),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
 
                               // Login button
                               _isLoading
