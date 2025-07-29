@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:kmasset_aplikasi/employee_data.dart';
+import 'package:kmasset_aplikasi/form_pengajuan_tiket.dart';
 import 'utils/priority_utils.dart';
 import 'widgets/modern_appbar.dart';
 
@@ -65,6 +66,12 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
 
   // Load data dari JSON dengan perulangan dan percabangan
   void _loadTicketData() {
+    // Clear existing data first
+    _tickets.clear();
+
+    // TEMPORARY: Uncomment baris di bawah untuk test empty state
+    // return; // Uncomment ini untuk melihat empty state "Belum Ada Tiket"
+
     // JSON data yang kompleks
     const String jsonString = '''
     {
@@ -278,6 +285,29 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
         return matchesSearch && matchesStatus && matchesPriority;
       }).toList();
     });
+  }
+
+  // Refresh data
+  Future<void> _refreshData() async {
+    // Simulate loading delay
+    await Future.delayed(const Duration(milliseconds: 800));
+
+    // Reload ticket data
+    _loadTicketData();
+    _applyFilters();
+
+    // Show success message
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Data berhasil diperbarui'),
+          backgroundColor: Color.fromARGB(255, 16, 91, 16),
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(16),
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
   }
 
   void _clearAllFilters() {
@@ -504,13 +534,20 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                       ],
                     ),
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _filteredTickets.length,
-                    itemBuilder: (context, index) {
-                      final ticket = _filteredTickets[index];
-                      return _buildTicketCard(ticket);
-                    },
+                : RefreshIndicator(
+                    onRefresh: _refreshData,
+                    color: const Color.fromARGB(255, 9, 57, 81),
+                    backgroundColor: Colors.white,
+                    child: _filteredTickets.isEmpty
+                        ? _buildEmptyState()
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: _filteredTickets.length,
+                            itemBuilder: (context, index) {
+                              final ticket = _filteredTickets[index];
+                              return _buildTicketCard(ticket);
+                            },
+                          ),
                   ),
           ),
         ],
@@ -673,6 +710,113 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Empty State Widget
+  Widget _buildEmptyState() {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.6,
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Empty State Icon
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 9, 57, 81).withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                _searchQuery.isNotEmpty ||
+                        _selectedStatus != null ||
+                        _selectedPriority != null
+                    ? Icons.search_off
+                    : Icons.history,
+                size: 64,
+                color: const Color.fromARGB(255, 9, 57, 81).withOpacity(0.6),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Title
+            Text(
+              _searchQuery.isNotEmpty ||
+                      _selectedStatus != null ||
+                      _selectedPriority != null
+                  ? 'Tidak Ada Hasil'
+                  : 'Belum Ada Tiket',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 9, 57, 81),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+
+            // Description
+            Text(
+              _searchQuery.isNotEmpty
+                  ? 'Tidak ada tiket yang sesuai dengan pencarian "$_searchQuery"'
+                  : _selectedStatus != null || _selectedPriority != null
+                      ? 'Tidak ada tiket dengan filter yang dipilih'
+                      : 'Anda belum mengajukan tiket apapun.\nMulai dengan mengajukan tiket baru!',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+
+            // Action Button
+            if (_searchQuery.isNotEmpty ||
+                _selectedStatus != null ||
+                _selectedPriority != null)
+              ElevatedButton.icon(
+                onPressed: _clearAllFilters,
+                icon: const Icon(Icons.clear),
+                label: const Text('Hapus Filter'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 9, 57, 81),
+                  foregroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              )
+            else
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FormPengajuanTiketPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('Ajukan Tiket Baru'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 16, 91, 16),
+                  foregroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
