@@ -49,6 +49,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
   ];
   // final List<String> _locationOptions = [ ... ]; // Dihapus
   bool _showAdvancedFilters = false;
+  bool _isLoading = true; // Add loading state
 
   @override
   void initState() {
@@ -258,6 +259,13 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
       _filteredTickets = List.from(_tickets);
     } catch (e) {
       print('Error loading ticket data: $e');
+    } finally {
+      // Set loading to false after data is loaded
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -289,6 +297,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
 
   // Refresh data
   Future<void> _refreshData() async {
+    // Set loading state
+    setState(() {
+      _isLoading = true;
+    });
+
     // Simulate loading delay
     await Future.delayed(const Duration(milliseconds: 800));
 
@@ -534,21 +547,29 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                       ],
                     ),
                   )
-                : RefreshIndicator(
-                    onRefresh: _refreshData,
-                    color: const Color.fromARGB(255, 9, 57, 81),
-                    backgroundColor: Colors.white,
-                    child: _filteredTickets.isEmpty
-                        ? _buildEmptyState()
-                        : ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: _filteredTickets.length,
-                            itemBuilder: (context, index) {
-                              final ticket = _filteredTickets[index];
-                              return _buildTicketCard(ticket);
-                            },
-                          ),
-                  ),
+                : _isLoading
+                    ? RefreshIndicator(
+                        onRefresh: _refreshData,
+                        color: const Color.fromARGB(255, 9, 57, 81),
+                        backgroundColor: Colors.white,
+                        child: _buildSkeletonLoading(),
+                      )
+                    : RefreshIndicator(
+                        onRefresh: _refreshData,
+                        color: const Color.fromARGB(255, 9, 57, 81),
+                        backgroundColor: Colors.white,
+                        child: _filteredTickets.isEmpty
+                            ? _buildEmptyState()
+                            : ListView.builder(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                itemCount: _filteredTickets.length,
+                                itemBuilder: (context, index) {
+                                  final ticket = _filteredTickets[index];
+                                  return _buildTicketCard(ticket);
+                                },
+                              ),
+                      ),
           ),
         ],
       ),
@@ -710,6 +731,116 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Skeleton Loading Widget
+  Widget _buildSkeletonLoading() {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: 6, // Show 6 skeleton items
+      itemBuilder: (context, index) {
+        return _buildSkeletonCard();
+      },
+    );
+  }
+
+  Widget _buildSkeletonCard() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header skeleton
+            Row(
+              children: [
+                // Kode tiket skeleton
+                Expanded(
+                  child: Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Status skeleton
+                Container(
+                  width: 80,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // Title skeleton
+            Container(
+              height: 24,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Description skeleton
+            Container(
+              height: 16,
+              width: MediaQuery.of(context).size.width * 0.7,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Details skeleton
+            Row(
+              children: [
+                // Location skeleton
+                Expanded(
+                  child: Container(
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Priority skeleton
+                Container(
+                  width: 60,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
