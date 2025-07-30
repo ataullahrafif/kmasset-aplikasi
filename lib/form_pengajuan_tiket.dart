@@ -34,7 +34,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   DateTime? _selectedDate;
 
   // Dropdown selections
-  String? _selectedLocation;
   String? _selectedClassification;
 
   // File upload
@@ -45,15 +44,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   // Auto-save
   Timer? _autoSaveTimer;
   static const Duration _autoSaveDelay = Duration(seconds: 2);
-
-  // Dropdown options
-  final List<Map<String, String>> _locationOptions = [
-    {'code': 'LOC001', 'name': 'Gedung A - Lantai 1'},
-    {'code': 'LOC002', 'name': 'Gedung A - Lantai 2'},
-    {'code': 'LOC003', 'name': 'Gedung B - Lantai 1'},
-    {'code': 'LOC004', 'name': 'Gedung B - Lantai 2'},
-    {'code': 'LOC005', 'name': 'Gedung C - Lantai 1'},
-  ];
 
   final List<Map<String, String>> _classificationOptions = [
     {'code': 'CLS001', 'name': 'Perbaikan Alat Medis'},
@@ -140,7 +130,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     // Check if there's meaningful content to save
     final hasContent = _judulTiketController.text.trim().isNotEmpty ||
         _deskripsiController.text.trim().isNotEmpty ||
-        _selectedLocation != null ||
         _selectedClassification != null ||
         _nomorTeleponController.text.trim().isNotEmpty;
 
@@ -155,7 +144,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
       final draftData = {
         'judul': _judulTiketController.text,
         'deskripsi': _deskripsiController.text,
-        'lokasi': _selectedLocation,
         'klasifikasi': _selectedClassification,
         'ekstensi': _extensiController.text,
         'nomor_telepon': _nomorTeleponController.text,
@@ -281,7 +269,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                       setState(() {
                         _judulTiketController.clear();
                         _deskripsiController.clear();
-                        _selectedLocation = null;
+
                         _selectedClassification = null;
                         _extensiController.clear();
                         _nomorTeleponController.clear();
@@ -315,7 +303,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                         _judulTiketController.text = draftData['judul'] ?? '';
                         _deskripsiController.text =
                             draftData['deskripsi'] ?? '';
-                        _selectedLocation = draftData['lokasi'];
+
                         _selectedClassification = draftData['klasifikasi'];
                         _extensiController.text = draftData['ekstensi'] ?? '';
                         _nomorTeleponController.text =
@@ -900,37 +888,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                               if (!RegExp(r'^\d{10,13}$').hasMatch(
                                   value.replaceAll(RegExp(r'[^\d]'), ''))) {
                                 return 'Nomor telepon harus 10-13 digit';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Lokasi
-                          DropdownButtonFormField<String>(
-                            value: _selectedLocation,
-                            decoration: InputDecoration(
-                              labelText: 'Lokasi *',
-                              prefixIcon: const Icon(Icons.location_on),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            items: _locationOptions.map((location) {
-                              return DropdownMenuItem<String>(
-                                value: location['code'],
-                                child: Text(location['name']!),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedLocation = value;
-                              });
-                              _onFieldChanged();
-                            },
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Lokasi harus dipilih';
                               }
                               return null;
                             },

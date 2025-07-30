@@ -86,7 +86,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-001",
               "pusat_kendali": "IT Support",
-              "lokasi": "Gedung A - Lantai 1",
               "judul_tiket": "Perbaikan Alat X-Ray",
               "klarifikasi_tiket": "Perbaikan Alat X-Ray Rusak",
               "deskripsi": "Alat X-Ray tidak bisa menyala sejak kemarin. Sudah dicoba restart namun tetap gagal.",
@@ -98,7 +97,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-002",
               "pusat_kendali": "Logistik",
-              "lokasi": "Gedung A - Lantai 2",
               "judul_tiket": "Kalibrasi Mikroskop",
               "klarifikasi_tiket": "Kalibrasi Mikroskop Laboratorium",
               "deskripsi": "Mikroskop laboratorium perlu dikalibrasi ulang untuk hasil pengamatan yang akurat.",
@@ -115,7 +113,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-003",
               "pusat_kendali": "Keuangan",
-              "lokasi": "Gedung B - Lantai 1",
               "judul_tiket": "Penggantian Lampu",
               "klarifikasi_tiket": "Penggantian Lampu Ruangan UGD",
               "deskripsi": "Lampu di ruangan UGD sudah mati selama beberapa hari. Perlu penggantian lampu baru.",
@@ -127,7 +124,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-004",
               "pusat_kendali": "Umum",
-              "lokasi": "Gedung B - Lantai 2",
               "judul_tiket": "Maintenance Ventilator",
               "klarifikasi_tiket": "Maintenance Rutin Ventilator ICU",
               "deskripsi": "Ventilator ICU perlu di maintenance rutin untuk menjaga kualitas udara dan kenyamanan pasien.",
@@ -144,7 +140,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-005",
               "pusat_kendali": "Manajemen",
-              "lokasi": "Gedung C - Lantai 1",
               "judul_tiket": "Perbaikan Kulkas",
               "klarifikasi_tiket": "Perbaikan Kulkas Penyimpanan Obat Farmasi",
               "deskripsi": "Kulkas di ruang penyimpanan obat Farmasi tidak bisa dingin. Perlu perbaikan komponen pendingin.",
@@ -156,7 +151,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-006",
               "pusat_kendali": "IT Support",
-              "lokasi": "Gedung A - Lantai 1",
               "judul_tiket": "Servis Blender",
               "klarifikasi_tiket": "Servis Blender Industri Gizi",
               "deskripsi": "Blender yang digunakan untuk mencampur bahan makanan di ruang gizi perlu di servis rutin untuk menjaga kualitas produk.",
@@ -173,7 +167,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-007",
               "pusat_kendali": "Keuangan",
-              "lokasi": "Gedung A - Lantai 2",
               "judul_tiket": "Perbaikan AC",
               "klarifikasi_tiket": "Perbaikan AC Rusak Poli Anak",
               "deskripsi": "AC di ruang poli anak tidak bisa dingin. Perlu perbaikan komponen pendingin dan filter.",
@@ -185,7 +178,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-008",
               "pusat_kendali": "Umum",
-              "lokasi": "Gedung B - Lantai 1",
               "judul_tiket": "Penggantian Lampu Operasi",
               "klarifikasi_tiket": "Penggantian Bola Lampu Operasi Bedah",
               "deskripsi": "Lampu operasi bedah perlu diganti karena sudah rusak dan tidak bisa menyala.",
@@ -202,7 +194,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-009",
               "pusat_kendali": "Manajemen",
-              "lokasi": "Gedung C - Lantai 1",
               "judul_tiket": "Perbaikan Printer",
               "klarifikasi_tiket": "Perbaikan Printer Macet Administrasi",
               "deskripsi": "Printer yang digunakan untuk mencetak laporan administrasi tidak bisa mencetak. Perlu perbaikan komponen dan ink.",
@@ -214,7 +205,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-010",
               "pusat_kendali": "Umum",
-              "lokasi": "Gedung B - Lantai 2",
               "judul_tiket": "Perbaikan Lemari Pendingin",
               "klarifikasi_tiket": "Perbaikan Lemari Pendingin Kamar Mayat",
               "deskripsi": "Lemari pendingin di kamar mayat perlu di perbaiki karena tidak bisa mendinginkan kamar.",
@@ -226,7 +216,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             {
               "nomor_tiket": "TK-RSKM-20240626-011",
               "pusat_kendali": "IT Support",
-              "lokasi": "Gedung A - Lantai 3",
               "judul_tiket": "Perbaikan Sistem Komputer",
               "klarifikasi_tiket": "Perbaikan Sistem Komputer Administrasi",
               "deskripsi": "Sistem komputer di ruang administrasi mengalami gangguan. Perlu perbaikan hardware dan software.",
@@ -717,7 +706,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
               const SizedBox(height: 8),
 
               // Details
-              _buildDetailRow('Lokasi', ticket['lokasi'], Icons.location_on),
+
               _buildDetailRow(
                   'Tanggal', ticket['tanggal'], Icons.calendar_today),
               _buildDetailRow(
@@ -1231,8 +1220,6 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                                   Icons.confirmation_number),
                               _buildDetailItem('Klasifikasi',
                                   ticket['klarifikasi_tiket'], Icons.category),
-                              _buildDetailItem('Lokasi', ticket['lokasi'],
-                                  Icons.location_on),
                               _buildDetailItem('Tanggal', ticket['tanggal'],
                                   Icons.calendar_today),
                               _buildDetailItem('Organisasi Saya',
