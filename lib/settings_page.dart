@@ -456,11 +456,11 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                   if (value == null || value.isEmpty) {
                     return 'Password baru harus diisi';
                   }
-                  if (value.length < 8) {
-                    return 'Password minimal 8 karakter';
+                  if (value.length < 12) {
+                    return 'Password minimal 12 karakter';
                   }
                   if (!RegExp(
-                          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{8,}$')
+                          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
                       .hasMatch(value)) {
                     return 'Password harus kombinasi huruf besar, kecil, angka, dan karakter spesial';
                   }

@@ -79,13 +79,13 @@ class _LoginPageState extends State<LoginPage> {
       isValid = false;
     }
 
-    if (_passwordController.text.length < 8) {
+    if (_passwordController.text.length < 12) {
       setState(() {
-        _passwordErrorText = 'Password minimal 8 karakter';
+        _passwordErrorText = 'Password minimal 12 karakter';
       });
       isValid = false;
     } else if (!RegExp(
-            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{8,}$')
+            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
         .hasMatch(_passwordController.text)) {
       setState(() {
         _passwordErrorText =
@@ -352,11 +352,11 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      if (value.length < 8) {
+                                      if (value.length < 12) {
                                         _passwordErrorText =
-                                            'Password minimal 8 karakter';
+                                            'Password minimal 12 karakter';
                                       } else if (!RegExp(
-                                              r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{8,}$')
+                                              r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
                                           .hasMatch(value)) {
                                         _passwordErrorText =
                                             'Password harus kombinasi huruf besar, kecil, angka, dan karakter spesial';
