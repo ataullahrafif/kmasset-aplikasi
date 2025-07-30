@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/home_page.dart';
 import 'utils/device_utils.dart';
 import 'utils/logo_utils.dart';
+import 'utils/network_utils.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   bool _isLoading = false;
+  bool _isOffline = false; // Add offline state
 
   String? _usernameErrorText;
   String? _passwordErrorText;
@@ -33,19 +35,46 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  // Check internet connection
+  Future<bool> _checkInternetConnection() async {
+    try {
+      // Check connectivity first
+      bool hasConnectivity = await NetworkUtils.hasConnectivity();
+      debugPrint('Login - Has connectivity: $hasConnectivity');
+
+      if (!hasConnectivity) {
+        debugPrint('Login - No connectivity detected');
+        return false;
+      }
+
+      // For now, just return true if we have connectivity
+      debugPrint('Login - Has connectivity, assuming internet is available');
+      return true;
+    } catch (e) {
+      debugPrint('Login - Error checking internet connection: $e');
+      return false;
+    }
+  }
+
+  // Retry connection
+  void _retryConnection() {
+    _login();
+  }
+
   void _login() async {
     // Reset pesan error sebelum validasi
     setState(() {
       _usernameErrorText = null;
       _passwordErrorText = null;
+      _isOffline = false; // Reset offline state
     });
 
     // Validasi input
     bool isValid = true;
 
-    if (_usernameController.text.length < 3) {
+    if (_usernameController.text.length < 5) {
       setState(() {
-        _usernameErrorText = 'Username minimal 3 karakter';
+        _usernameErrorText = 'Username minimal 5 karakter';
       });
       isValid = false;
     }
@@ -72,6 +101,17 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isLoading = true;
     });
+
+    // Check internet connection first
+    bool hasInternet = await _checkInternetConnection();
+
+    if (!hasInternet) {
+      setState(() {
+        _isOffline = true;
+        _isLoading = false;
+      });
+      return;
+    }
 
     await Future.delayed(const Duration(seconds: 2));
 
@@ -248,9 +288,9 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      if (value.length < 3) {
+                                      if (value.length < 5) {
                                         _usernameErrorText =
-                                            'Username minimal 3 karakter';
+                                            'Username minimal 5 karakter';
                                       } else {
                                         _usernameErrorText = null;
                                       }
@@ -278,10 +318,6 @@ class _LoginPageState extends State<LoginPage> {
                                   obscureText: !_isPasswordVisible,
                                   decoration: InputDecoration(
                                     labelText: 'Password',
-                                    labelStyle: const TextStyle(
-                                      color: Color.fromARGB(255, 9, 57, 81),
-                                      fontWeight: FontWeight.w500,
-                                    ),
                                     prefixIcon: const Icon(
                                       Icons.lock_outline,
                                       color: Color.fromARGB(255, 9, 57, 81),
@@ -432,6 +468,114 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
+
+            // Offline error overlay
+            if (_isOffline)
+              Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: Container(
+                    margin: const EdgeInsets.all(32),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Icon
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.wifi_off,
+                            size: 40,
+                            color: Colors.red,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Title
+                        const Text(
+                          'Tidak Ada Koneksi Internet',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Description
+                        Text(
+                          'Mohon periksa koneksi internet Anda',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Action Buttons
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isOffline = false;
+                                  });
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.grey[600],
+                                  side: BorderSide(color: Colors.grey[300]!),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text('Kembali'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: _retryConnection,
+                                icon: const Icon(Icons.refresh, size: 18),
+                                label: const Text('Coba Lagi'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 9, 57, 81),
+                                  foregroundColor: Colors.white,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

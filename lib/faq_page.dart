@@ -22,13 +22,13 @@ class _FAQPageState extends State<FAQPage> {
     {
       'question': 'Bagaimana cara login ke aplikasi KMAsset?',
       'answer':
-          'Gunakan username dan password yang telah diberikan oleh administrator SI Rumah Sakit Krakatau Medika. Jika Anda mengalami kesulitan login, silakan hubungi tim SI.',
+          'Gunakan username dan password yang telah diberikan oleh administrator IT Rumah Sakit Krakatau Medika. Jika Anda mengalami kesulitan login, silakan hubungi tim IT.',
     },
     {
       'question':
           'Saya lupa password saya / ingin mengubah password saya, apa yang harus saya lakukan?',
       'answer':
-          'Jika Anda tidak bisa login karena lupa password, silakan hubungi administrator SI Rumah Sakit Krakatau Medika untuk bantuan reset password. Jika Anda sudah berhasil login dan ingin mengubah password Anda, Anda dapat melakukannya melalui menu "Pengaturan Akun" yang ada di halaman profil Anda.',
+          'Jika Anda tidak bisa login karena lupa password, silakan hubungi administrator IT Rumah Sakit Krakatau Medika untuk bantuan reset password. Jika Anda sudah berhasil login dan ingin mengubah password Anda, Anda dapat melakukannya melalui menu "Pengaturan Akun" yang ada di halaman profil Anda.',
     },
     {
       'question': 'Bagaimana cara mengajukan tiket perbaikan aset?',

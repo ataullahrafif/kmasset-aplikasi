@@ -176,7 +176,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    'Pengembang: Tim SI RSKM',
+                                    'Pengembang: Tim IT RSKM',
                                     style: TextStyle(fontSize: 14),
                                   ),
                                   SizedBox(height: 8),
