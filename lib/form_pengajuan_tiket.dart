@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/employee_data.dart';
+import 'utils/error_utils.dart';
+import 'utils/network_utils.dart';
 import 'widgets/modern_appbar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -74,6 +76,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
 
   bool _isLoading = false;
   bool _hasUnsavedChanges = false;
+  bool _isOffline = false; // Add offline state
 
   @override
   void initState() {
@@ -104,6 +107,32 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   void _scheduleAutoSave() {
     _autoSaveTimer?.cancel();
     _autoSaveTimer = Timer(_autoSaveDelay, _saveDraft);
+  }
+
+  // Check internet connection
+  Future<bool> _checkInternetConnection() async {
+    try {
+      // Check connectivity first
+      bool hasConnectivity = await NetworkUtils.hasConnectivity();
+      debugPrint('Form - Has connectivity: $hasConnectivity');
+
+      if (!hasConnectivity) {
+        debugPrint('Form - No connectivity detected');
+        return false;
+      }
+
+      // For now, just return true if we have connectivity
+      debugPrint('Form - Has connectivity, assuming internet is available');
+      return true;
+    } catch (e) {
+      debugPrint('Form - Error checking internet connection: $e');
+      return false;
+    }
+  }
+
+  // Retry connection
+  void _retryConnection() {
+    _submitForm();
   }
 
   Future<void> _saveDraft() async {
@@ -491,11 +520,23 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     }
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
+        _isOffline = false; // Reset offline state
       });
+
+      // Check internet connection first
+      bool hasInternet = await _checkInternetConnection();
+
+      if (!hasInternet) {
+        setState(() {
+          _isOffline = true;
+          _isLoading = false;
+        });
+        return;
+      }
 
       // Clear draft after successful submission
       _clearDraft();
@@ -1160,6 +1201,30 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                       ),
                     ),
                   ],
+                ),
+              ),
+            ),
+          if (_isOffline)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(
+                child: Container(
+                  margin: const EdgeInsets.all(32),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: ErrorUtils.buildNoInternetError(
+                    onRetry: _retryConnection,
+                  ),
                 ),
               ),
             ),

@@ -8,6 +8,8 @@ import 'dart:convert';
 import 'package:kmasset_aplikasi/employee_data.dart';
 import 'package:kmasset_aplikasi/form_pengajuan_tiket.dart';
 import 'utils/priority_utils.dart';
+import 'utils/error_utils.dart';
+import 'utils/network_utils.dart';
 import 'widgets/modern_appbar.dart';
 
 class HistoryTicketPage extends StatefulWidget {
@@ -50,6 +52,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
   // final List<String> _locationOptions = [ ... ]; // Dihapus
   bool _showAdvancedFilters = false;
   bool _isLoading = true; // Add loading state
+  bool _isOffline = false; // Add offline state
 
   @override
   void initState() {
@@ -300,15 +303,26 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
     // Set loading state
     setState(() {
       _isLoading = true;
+      _isOffline = false; // Reset offline state
     });
 
     // Simulate loading delay
     await Future.delayed(const Duration(milliseconds: 800));
 
+    // Check real internet connection
+    bool hasInternet = await _checkInternetConnection();
+
+    if (!hasInternet) {
+      setState(() {
+        _isOffline = true;
+        _isLoading = false;
+      });
+      return;
+    }
+
     // Reload ticket data
     _loadTicketData();
     _applyFilters();
-
     // Show success message
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -321,6 +335,34 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
         ),
       );
     }
+  }
+
+  // Check internet connection (real)
+  Future<bool> _checkInternetConnection() async {
+    try {
+      // Check connectivity first
+      bool hasConnectivity = await NetworkUtils.hasConnectivity();
+      debugPrint('Has connectivity: $hasConnectivity');
+
+      if (!hasConnectivity) {
+        debugPrint('No connectivity detected');
+        return false;
+      }
+
+      // Check actual internet connection
+      bool hasInternet = await NetworkUtils.hasInternetConnection();
+      debugPrint('Has internet: $hasInternet');
+
+      return hasInternet;
+    } catch (e) {
+      debugPrint('Error checking internet connection: $e');
+      return false;
+    }
+  }
+
+  // Retry connection
+  void _retryConnection() {
+    _refreshData();
   }
 
   void _clearAllFilters() {
@@ -517,59 +559,71 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
 
           // Tickets List
           Expanded(
-            child: _filteredTickets.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 64,
-                          color: Colors.grey[400],
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Tidak ada tiket ditemukan',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Coba ubah kata kunci pencarian',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                      ],
+            child: _isOffline
+                ? RefreshIndicator(
+                    onRefresh: _refreshData,
+                    color: const Color.fromARGB(255, 9, 57, 81),
+                    backgroundColor: Colors.white,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: ErrorUtils.buildNoInternetError(
+                        onRetry: _retryConnection,
+                      ),
                     ),
                   )
-                : _isLoading
-                    ? RefreshIndicator(
-                        onRefresh: _refreshData,
-                        color: const Color.fromARGB(255, 9, 57, 81),
-                        backgroundColor: Colors.white,
-                        child: _buildSkeletonLoading(),
-                      )
-                    : RefreshIndicator(
-                        onRefresh: _refreshData,
-                        color: const Color.fromARGB(255, 9, 57, 81),
-                        backgroundColor: Colors.white,
-                        child: _filteredTickets.isEmpty
-                            ? _buildEmptyState()
-                            : ListView.builder(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: _filteredTickets.length,
-                                itemBuilder: (context, index) {
-                                  final ticket = _filteredTickets[index];
-                                  return _buildTicketCard(ticket);
-                                },
+                : _filteredTickets.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search_off,
+                              size: 64,
+                              color: Colors.grey[400],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Tidak ada tiket ditemukan',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey[600],
                               ),
-                      ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Coba ubah kata kunci pencarian',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : _isLoading
+                        ? RefreshIndicator(
+                            onRefresh: _refreshData,
+                            color: const Color.fromARGB(255, 9, 57, 81),
+                            backgroundColor: Colors.white,
+                            child: _buildSkeletonLoading(),
+                          )
+                        : RefreshIndicator(
+                            onRefresh: _refreshData,
+                            color: const Color.fromARGB(255, 9, 57, 81),
+                            backgroundColor: Colors.white,
+                            child: _filteredTickets.isEmpty
+                                ? _buildEmptyState()
+                                : ListView.builder(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    itemCount: _filteredTickets.length,
+                                    itemBuilder: (context, index) {
+                                      final ticket = _filteredTickets[index];
+                                      return _buildTicketCard(ticket);
+                                    },
+                                  ),
+                          ),
           ),
         ],
       ),
