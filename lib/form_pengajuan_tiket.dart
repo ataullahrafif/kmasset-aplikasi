@@ -27,6 +27,8 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   final TextEditingController _organisasiController = TextEditingController();
   final TextEditingController _userController =
       TextEditingController(); // Ganti dari _karyawanController
+  final TextEditingController _extensiController = TextEditingController();
+  final TextEditingController _nomorTeleponController = TextEditingController();
 
   DateTime? _selectedDate;
 
@@ -90,6 +92,8 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     // Add listeners for auto-save
     _judulTiketController.addListener(_onFieldChanged);
     _deskripsiController.addListener(_onFieldChanged);
+    _extensiController.addListener(_onFieldChanged);
+    _nomorTeleponController.addListener(_onFieldChanged);
   }
 
   void _onFieldChanged() {
@@ -109,7 +113,8 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     final hasContent = _judulTiketController.text.trim().isNotEmpty ||
         _deskripsiController.text.trim().isNotEmpty ||
         _selectedLocation != null ||
-        _selectedClassification != null;
+        _selectedClassification != null ||
+        _nomorTeleponController.text.trim().isNotEmpty;
 
     if (!hasContent) {
       // If no meaningful content, clear any existing draft
@@ -124,6 +129,8 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
         'deskripsi': _deskripsiController.text,
         'lokasi': _selectedLocation,
         'klasifikasi': _selectedClassification,
+        'ekstensi': _extensiController.text,
+        'nomor_telepon': _nomorTeleponController.text,
         'tanggal': _selectedDate?.toIso8601String(),
         'timestamp': DateTime.now().toIso8601String(),
       };
@@ -248,6 +255,8 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                         _deskripsiController.clear();
                         _selectedLocation = null;
                         _selectedClassification = null;
+                        _extensiController.clear();
+                        _nomorTeleponController.clear();
                         _selectedDate = DateTime.now();
                         _tanggalController.text = _formatDate(_selectedDate!);
                         _selectedImages.clear();
@@ -280,6 +289,9 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                             draftData['deskripsi'] ?? '';
                         _selectedLocation = draftData['lokasi'];
                         _selectedClassification = draftData['klasifikasi'];
+                        _extensiController.text = draftData['ekstensi'] ?? '';
+                        _nomorTeleponController.text =
+                            draftData['nomor_telepon'] ?? '';
                         if (draftData['tanggal'] != null) {
                           _selectedDate = DateTime.parse(draftData['tanggal']);
                           _tanggalController.text = _formatDate(_selectedDate!);
@@ -442,6 +454,8 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     _tanggalController.dispose();
     _organisasiController.dispose();
     _userController.dispose(); // Ganti dari _karyawanController.dispose();
+    _extensiController.dispose();
+    _nomorTeleponController.dispose();
     super.dispose();
   }
 
@@ -796,6 +810,56 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Klasifikasi harus dipilih';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Ekstensi Telepon
+                          TextFormField(
+                            controller: _extensiController,
+                            decoration: InputDecoration(
+                              labelText: 'Ekstensi Telepon',
+                              prefixIcon: const Icon(Icons.phone),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value != null && value.isNotEmpty) {
+                                if (!RegExp(r'^\d+$').hasMatch(value)) {
+                                  return 'Ekstensi harus berupa angka';
+                                }
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Nomor Telepon
+                          TextFormField(
+                            controller: _nomorTeleponController,
+                            decoration: InputDecoration(
+                              labelText: 'Nomor Telepon *',
+                              prefixIcon: const Icon(Icons.phone_android),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            keyboardType: TextInputType.phone,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Nomor telepon harus diisi';
+                              }
+                              if (!RegExp(r'^\d{10,13}$').hasMatch(
+                                  value.replaceAll(RegExp(r'[^\d]'), ''))) {
+                                return 'Nomor telepon harus 10-13 digit';
                               }
                               return null;
                             },
