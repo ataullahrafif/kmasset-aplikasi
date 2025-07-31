@@ -329,6 +329,144 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
   bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
 
+  // Password validation states
+  bool _hasMinLength = false;
+  bool _hasUppercase = false;
+  bool _hasLowercase = false;
+  bool _hasNumber = false;
+  bool _hasSpecialChar = false;
+  bool _hasNoSpaces = false;
+  bool _hasNoSequential = false;
+  bool _hasNoRepeating = false;
+  bool _hasNoCommonPassword = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _newPasswordController.addListener(_validatePassword);
+  }
+
+  void _validatePassword() {
+    final password = _newPasswordController.text;
+    setState(() {
+      _hasMinLength = password.length >= 12;
+      _hasUppercase = password.contains(RegExp(r'[A-Z]'));
+      _hasLowercase = password.contains(RegExp(r'[a-z]'));
+      _hasNumber = password.contains(RegExp(r'[0-9]'));
+      _hasSpecialChar = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+      _hasNoSpaces = !password.contains(' ');
+      _hasNoSequential = !_hasSequentialPattern(password);
+      _hasNoRepeating = !_hasRepeatingPattern(password);
+      _hasNoCommonPassword = !_isCommonPassword(password);
+    });
+  }
+
+  // Check for sequential patterns (abc, 123, etc.)
+  bool _hasSequentialPattern(String password) {
+    if (password.length < 3) return false;
+
+    for (int i = 0; i <= password.length - 3; i++) {
+      String sequence = password.substring(i, i + 3);
+
+      // Check for sequential letters (abc, def, etc.)
+      if (_isSequentialLetters(sequence)) return true;
+
+      // Check for sequential numbers (123, 456, etc.)
+      if (_isSequentialNumbers(sequence)) return true;
+    }
+    return false;
+  }
+
+  bool _isSequentialLetters(String sequence) {
+    if (sequence.length != 3) return false;
+    if (!RegExp(r'^[a-zA-Z]{3}$').hasMatch(sequence)) return false;
+
+    String lower = sequence.toLowerCase();
+    return (lower.codeUnitAt(1) == lower.codeUnitAt(0) + 1 &&
+        lower.codeUnitAt(2) == lower.codeUnitAt(1) + 1);
+  }
+
+  bool _isSequentialNumbers(String sequence) {
+    if (sequence.length != 3) return false;
+    if (!RegExp(r'^[0-9]{3}$').hasMatch(sequence)) return false;
+
+    return (sequence.codeUnitAt(1) == sequence.codeUnitAt(0) + 1 &&
+        sequence.codeUnitAt(2) == sequence.codeUnitAt(1) + 1);
+  }
+
+  // Check for repeating patterns (aaa, 111, etc.)
+  bool _hasRepeatingPattern(String password) {
+    if (password.length < 3) return false;
+
+    for (int i = 0; i <= password.length - 3; i++) {
+      String pattern = password.substring(i, i + 3);
+      if (pattern[0] == pattern[1] && pattern[1] == pattern[2]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Check for common/weak passwords
+  bool _isCommonPassword(String password) {
+    List<String> commonPasswords = [
+      'password',
+      '123456',
+      '123456789',
+      'qwerty',
+      'abc123',
+      'password123',
+      'admin',
+      'letmein',
+      'welcome',
+      'monkey',
+      'dragon',
+      'master',
+      'sunshine',
+      'princess',
+      'qwerty123',
+      'admin123',
+      'user123',
+      'test123',
+      'demo123',
+      'guest123',
+      'password1',
+      '12345678',
+      'qwertyuiop',
+      'asdfghjkl',
+      'zxcvbnm',
+      '111111',
+      '000000',
+      '123123',
+      'abcabc',
+      'qweqwe',
+      'password12',
+      'admin1234',
+      'user1234',
+      'test1234',
+      'demo1234',
+      'password1234',
+      'admin12345',
+      'user12345',
+      'test12345',
+      'demo12345',
+    ];
+
+    return commonPasswords.contains(password.toLowerCase());
+  }
+
+  bool _isPasswordValid() {
+    return _hasMinLength &&
+        _hasUppercase &&
+        _hasLowercase &&
+        _hasNumber &&
+        _hasSpecialChar &&
+        _hasNoSpaces &&
+        _hasNoSequential &&
+        _hasNoRepeating &&
+        _hasNoCommonPassword;
+  }
+
   @override
   void dispose() {
     _currentPasswordController.dispose();
@@ -456,16 +594,52 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                   if (value == null || value.isEmpty) {
                     return 'Password baru harus diisi';
                   }
-                  if (value.length < 12) {
-                    return 'Password minimal 12 karakter';
-                  }
-                  if (!RegExp(
-                          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$&*~_\-\.,:;\^%\$\(\)\[\]\{\}]).{12,}$')
-                      .hasMatch(value)) {
-                    return 'Password harus kombinasi huruf besar, kecil, angka, dan karakter spesial';
+                  if (!_isPasswordValid()) {
+                    return 'Password tidak memenuhi persyaratan';
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 16),
+
+              // Password Requirements
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 9, 57, 81).withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 9, 57, 81)
+                          .withOpacity(0.2)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Persyaratan Kata Sandi:',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromARGB(255, 9, 57, 81),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildRequirement('Minimal 12 karakter', _hasMinLength),
+                    _buildRequirement('Huruf besar (A-Z)', _hasUppercase),
+                    _buildRequirement('Huruf kecil (a-z)', _hasLowercase),
+                    _buildRequirement('Angka (0-9)', _hasNumber),
+                    _buildRequirement(
+                        'Karakter khusus (!@#\$%^&*)', _hasSpecialChar),
+                    _buildRequirement(
+                        'Tidak boleh mengandung spasi', _hasNoSpaces),
+                    _buildRequirement('Tidak boleh pola berurutan (abc, 123)',
+                        _hasNoSequential),
+                    _buildRequirement(
+                        'Tidak boleh karakter berulang (aaa)', _hasNoRepeating),
+                    _buildRequirement('Tidak boleh password umum/lemah',
+                        _hasNoCommonPassword),
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -543,6 +717,29 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                 ),
               ),
       ],
+    );
+  }
+
+  Widget _buildRequirement(String text, bool isMet) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Icon(
+            isMet ? Icons.check_circle : Icons.circle_outlined,
+            size: 16,
+            color: isMet ? const Color.fromARGB(255, 16, 91, 16) : Colors.grey,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black87,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
