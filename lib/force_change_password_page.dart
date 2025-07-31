@@ -34,6 +34,10 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
   bool _hasLowercase = false;
   bool _hasNumber = false;
   bool _hasSpecialChar = false;
+  bool _hasNoSpaces = false;
+  bool _hasNoSequential = false;
+  bool _hasNoRepeating = false;
+  bool _hasNoCommonPassword = false;
 
   @override
   void initState() {
@@ -49,7 +53,105 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
       _hasLowercase = password.contains(RegExp(r'[a-z]'));
       _hasNumber = password.contains(RegExp(r'[0-9]'));
       _hasSpecialChar = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+      _hasNoSpaces = !password.contains(' ');
+      _hasNoSequential = !_hasSequentialPattern(password);
+      _hasNoRepeating = !_hasRepeatingPattern(password);
+      _hasNoCommonPassword = !_isCommonPassword(password);
     });
+  }
+
+  // Check for sequential patterns (abc, 123, etc.)
+  bool _hasSequentialPattern(String password) {
+    if (password.length < 3) return false;
+
+    for (int i = 0; i <= password.length - 3; i++) {
+      String sequence = password.substring(i, i + 3);
+
+      // Check for sequential letters (abc, def, etc.)
+      if (_isSequentialLetters(sequence)) return true;
+
+      // Check for sequential numbers (123, 456, etc.)
+      if (_isSequentialNumbers(sequence)) return true;
+    }
+    return false;
+  }
+
+  bool _isSequentialLetters(String sequence) {
+    if (sequence.length != 3) return false;
+    if (!RegExp(r'^[a-zA-Z]{3}$').hasMatch(sequence)) return false;
+
+    String lower = sequence.toLowerCase();
+    return (lower.codeUnitAt(1) == lower.codeUnitAt(0) + 1 &&
+        lower.codeUnitAt(2) == lower.codeUnitAt(1) + 1);
+  }
+
+  bool _isSequentialNumbers(String sequence) {
+    if (sequence.length != 3) return false;
+    if (!RegExp(r'^[0-9]{3}$').hasMatch(sequence)) return false;
+
+    return (sequence.codeUnitAt(1) == sequence.codeUnitAt(0) + 1 &&
+        sequence.codeUnitAt(2) == sequence.codeUnitAt(1) + 1);
+  }
+
+  // Check for repeating patterns (aaa, 111, etc.)
+  bool _hasRepeatingPattern(String password) {
+    if (password.length < 3) return false;
+
+    for (int i = 0; i <= password.length - 3; i++) {
+      String pattern = password.substring(i, i + 3);
+      if (pattern[0] == pattern[1] && pattern[1] == pattern[2]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Check for common/weak passwords
+  bool _isCommonPassword(String password) {
+    List<String> commonPasswords = [
+      'password',
+      '123456',
+      '123456789',
+      'qwerty',
+      'abc123',
+      'password123',
+      'admin',
+      'letmein',
+      'welcome',
+      'monkey',
+      'dragon',
+      'master',
+      'sunshine',
+      'princess',
+      'qwerty123',
+      'admin123',
+      'user123',
+      'test123',
+      'demo123',
+      'guest123',
+      'password1',
+      '12345678',
+      'qwertyuiop',
+      'asdfghjkl',
+      'zxcvbnm',
+      '111111',
+      '000000',
+      '123123',
+      'abcabc',
+      'qweqwe',
+      'password12',
+      'admin1234',
+      'user1234',
+      'test1234',
+      'demo1234',
+      'password1234',
+      'admin12345',
+      'user12345',
+      'test12345',
+      'demo12345',
+    ];
+
+    return commonPasswords.contains(password.toLowerCase());
   }
 
   bool _isPasswordValid() {
@@ -57,7 +159,11 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
         _hasUppercase &&
         _hasLowercase &&
         _hasNumber &&
-        _hasSpecialChar;
+        _hasSpecialChar &&
+        _hasNoSpaces &&
+        _hasNoSequential &&
+        _hasNoRepeating &&
+        _hasNoCommonPassword;
   }
 
   Future<bool> _checkInternetConnection() async {
@@ -111,14 +217,14 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
         barrierDismissible: false,
         builder: (context) => Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Container(
             constraints: const BoxConstraints(
-              maxWidth: 400,
-              maxHeight: 300,
+              maxWidth: 320,
+              maxHeight: 180,
             ),
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -126,59 +232,67 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 16, 91, 16)
                             .withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Icon(
                         Icons.check_circle,
                         color: Color.fromARGB(255, 16, 91, 16),
-                        size: 20,
+                        size: 18,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     const Expanded(
                       child: Text(
                         'Password Berhasil Diubah',
                         style: TextStyle(
                           color: Color.fromARGB(255, 16, 91, 16),
                           fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 const Flexible(
-                  child: SingleChildScrollView(
-                    child: Text(
-                      'Password Anda telah berhasil diubah. Anda dapat melanjutkan menggunakan aplikasi.',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                  child: Text(
+                    'Password Anda telah berhasil diubah. Anda dapat melanjutkan menggunakan aplikasi.',
+                    style: TextStyle(fontSize: 14),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close dialog
-                    // Navigate to home page
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => const HomePage(initialIndex: 0),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close dialog
+                      // Navigate to home page
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(initialIndex: 0),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 16, 91, 16),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      (route) => false,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 16, 91, 16),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'Lanjutkan',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                   ),
-                  child: const Text('Lanjutkan'),
                 ),
               ],
             ),
@@ -380,6 +494,16 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                           _buildRequirement('Angka (0-9)', _hasNumber),
                           _buildRequirement(
                               'Karakter khusus (!@#\$%^&*)', _hasSpecialChar),
+                          _buildRequirement(
+                              'Tidak boleh mengandung spasi', _hasNoSpaces),
+                          _buildRequirement(
+                              'Tidak boleh pola berurutan (abc, 123)',
+                              _hasNoSequential),
+                          _buildRequirement(
+                              'Tidak boleh karakter berulang (aaa)',
+                              _hasNoRepeating),
+                          _buildRequirement('Tidak boleh password umum/lemah',
+                              _hasNoCommonPassword),
                         ],
                       ),
                     ),
