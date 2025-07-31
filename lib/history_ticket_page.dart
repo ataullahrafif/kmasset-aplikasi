@@ -3,7 +3,6 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously, prefer_final_fields, avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:kmasset_aplikasi/employee_data.dart';
 import 'package:kmasset_aplikasi/form_pengajuan_tiket.dart';
@@ -381,8 +380,8 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+                bottomLeft: const Radius.circular(20),
+                bottomRight: const Radius.circular(20),
               ),
               boxShadow: [
                 BoxShadow(
@@ -1087,8 +1086,8 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                               ],
                             ),
                             borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(24),
-                              topRight: Radius.circular(24),
+                              topLeft: const Radius.circular(24),
+                              topRight: const Radius.circular(24),
                             ),
                           ),
                           child: Column(
@@ -1237,52 +1236,264 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                         // Actions
                         Container(
                           padding: const EdgeInsets.all(24),
-                          child: Row(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: const Radius.circular(24),
+                              bottomRight: const Radius.circular(24),
+                            ),
+                          ),
+                          child: Column(
                             children: [
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  onPressed: () async {
-                                    await Clipboard.setData(ClipboardData(
-                                        text: ticket['kode_tiket']));
-                                    if (context.mounted) {
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Kode tiket disalin ke clipboard'),
-                                          backgroundColor:
-                                              Color.fromARGB(255, 16, 91, 16),
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: EdgeInsets.all(16),
+                              // Action Buttons
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.red[400]!,
+                                            Colors.red[600]!,
+                                          ],
                                         ),
-                                      );
-                                    }
-                                  },
-                                  icon: const Icon(Icons.copy),
-                                  label: const Text('Salin Kode'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.grey[200],
-                                    foregroundColor: Colors.black87,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.red.withOpacity(0.3),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          // TO DO: Implementasi logika tolak tiket
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              title: Row(
+                                                children: [
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red
+                                                          .withOpacity(0.1),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 12),
+                                                  const Text(
+                                                    'Tolak Tiket',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              content: const Text(
+                                                  'Apakah Anda yakin ingin menolak tiket ini? Tindakan ini tidak dapat dibatalkan.'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: const Text(
+                                                    'Batal',
+                                                    style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context); // Close dialog
+                                                    Navigator.pop(
+                                                        context); // Close detail
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Row(
+                                                          children: [
+                                                            const Icon(
+                                                              Icons
+                                                                  .check_circle,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 20,
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 12),
+                                                            const Text(
+                                                                'Tiket berhasil ditolak'),
+                                                          ],
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.red[600],
+                                                        behavior:
+                                                            SnackBarBehavior
+                                                                .floating,
+                                                        margin: const EdgeInsets
+                                                            .all(16),
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.red[600],
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+                                                    ),
+                                                  ),
+                                                  child: const Text(
+                                                    'Tolak',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        icon: const Icon(Icons.close, size: 20),
+                                        label: const Text(
+                                          'Tolak',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          foregroundColor: Colors.white,
+                                          shadowColor: Colors.transparent,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 16),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                        ),
+                                      ),
                                     ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            const Color.fromARGB(
+                                                255, 9, 57, 81),
+                                            const Color.fromARGB(255, 9, 57, 81)
+                                                .withOpacity(0.8),
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color.fromARGB(
+                                                    255, 9, 57, 81)
+                                                .withOpacity(0.3),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          // Tutup dialog detail tiket
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(Icons.check_circle,
+                                            size: 20),
+                                        label: const Text(
+                                          'Tutup Detail',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          foregroundColor: Colors.white,
+                                          shadowColor: Colors.transparent,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 16),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              // Info Text
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.blue.withOpacity(0.2),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 9, 57, 81),
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      size: 20,
+                                      color: Colors.blue[600],
                                     ),
-                                  ),
-                                  child: const Text('Tutup'),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Pilih aksi untuk menolak tiket atau tutup detail',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blue[700],
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
