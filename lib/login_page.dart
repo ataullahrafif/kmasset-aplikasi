@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/home_page.dart';
+import 'package:kmasset_aplikasi/force_change_password_page.dart';
 import 'utils/device_utils.dart';
 import 'utils/logo_utils.dart';
 import 'utils/network_utils.dart';
@@ -121,10 +122,27 @@ class _LoginPageState extends State<LoginPage> {
 
     // Simulasi login: jika username dan password valid format, izinkan login
     if (isValid) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      // TO DO: Backend akan mengirim data apakah user perlu force change password
+      // Untuk demo, kita akan force change password untuk username tertentu
+      bool needForceChangePassword =
+          _usernameController.text.toLowerCase() == 'admin' ||
+              _usernameController.text.toLowerCase() == 'user1' ||
+              _usernameController.text.toLowerCase() == 'test2';
+
+      if (needForceChangePassword) {
+        // User perlu ganti password terlebih dahulu
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const ForceChangePasswordPage()),
+        );
+      } else {
+        // User bisa langsung ke home page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      }
       return;
     }
   }

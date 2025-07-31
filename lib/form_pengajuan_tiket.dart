@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:kmasset_aplikasi/employee_data.dart';
 import 'utils/network_utils.dart';
 import 'widgets/modern_appbar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,9 +24,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   final TextEditingController _klasifikasiController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
-  final TextEditingController _organisasiController = TextEditingController();
-  final TextEditingController _userController =
-      TextEditingController(); // Ganti dari _karyawanController
+
   final TextEditingController _extensiController = TextEditingController();
   final TextEditingController _nomorTeleponController = TextEditingController();
 
@@ -77,8 +74,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
   void _initializeForm() {
     _selectedDate = DateTime.now();
     _tanggalController.text = _formatDate(_selectedDate!);
-    _organisasiController.text = EmployeeData.organization;
-    _userController.text = EmployeeData.employeeName;
+
     _selectedPusatKendali = null; // Set null agar user wajib memilih
 
     // Add listeners for auto-save
@@ -468,8 +464,7 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     _klasifikasiController.dispose();
     _deskripsiController.dispose();
     _tanggalController.dispose();
-    _organisasiController.dispose();
-    _userController.dispose(); // Ganti dari _karyawanController.dispose();
+
     _extensiController.dispose();
     _nomorTeleponController.dispose();
     super.dispose();
@@ -524,6 +519,19 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
         });
         return;
       }
+
+      // TO DO: Ketika mengirim data ke backend, organisasi dan user diambil dari session
+      // final ticketData = {
+      //   'judul': _judulTiketController.text,
+      //   'deskripsi': _deskripsiController.text,
+      //   'klasifikasi': _selectedClassification,
+      //   'pusat_kendali': _selectedPusatKendali,
+      //   'organisasi': EmployeeData.organization, // Ambil dari session
+      //   'user': EmployeeData.employeeName, // Ambil dari session
+      //   'tanggal': _selectedDate?.toIso8601String(),
+      //   'ekstensi': _extensiController.text,
+      //   'nomor_telepon': _nomorTeleponController.text,
+      // };
 
       // Clear draft after successful submission
       _clearDraft();
@@ -744,38 +752,6 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
                               }
                               return null;
                             },
-                          ),
-                          const SizedBox(height: 16),
-
-                          // User (readonly)
-                          TextFormField(
-                            controller: _userController,
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: 'User',
-                              prefixIcon: const Icon(Icons.person),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Organisasi User (readonly)
-                          TextFormField(
-                            controller: _organisasiController,
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: 'Organisasi User',
-                              prefixIcon: const Icon(Icons.business),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
-                            ),
                           ),
                           const SizedBox(height: 16),
 
