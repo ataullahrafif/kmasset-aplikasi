@@ -380,8 +380,8 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: const BorderRadius.only(
-                bottomLeft: const Radius.circular(20),
-                bottomRight: const Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
               boxShadow: [
                 BoxShadow(
@@ -1086,8 +1086,8 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                               ],
                             ),
                             borderRadius: const BorderRadius.only(
-                              topLeft: const Radius.circular(24),
-                              topRight: const Radius.circular(24),
+                              topLeft: Radius.circular(24),
+                              topRight: Radius.circular(24),
                             ),
                           ),
                           child: Column(
@@ -1239,8 +1239,8 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                           decoration: BoxDecoration(
                             color: Colors.grey[50],
                             borderRadius: const BorderRadius.only(
-                              bottomLeft: const Radius.circular(24),
-                              bottomRight: const Radius.circular(24),
+                              bottomLeft: Radius.circular(24),
+                              bottomRight: Radius.circular(24),
                             ),
                           ),
                           child: Column(
@@ -1331,18 +1331,17 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
                                                             context)
                                                         .showSnackBar(
                                                       SnackBar(
-                                                        content: Row(
+                                                        content: const Row(
                                                           children: [
-                                                            const Icon(
+                                                            Icon(
                                                               Icons
                                                                   .check_circle,
                                                               color:
                                                                   Colors.white,
                                                               size: 20,
                                                             ),
-                                                            const SizedBox(
-                                                                width: 12),
-                                                            const Text(
+                                                            SizedBox(width: 12),
+                                                            Text(
                                                                 'Tiket berhasil ditolak'),
                                                           ],
                                                         ),
