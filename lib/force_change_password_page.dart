@@ -315,7 +315,7 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: const ModernAppBar(
-        title: 'Ganti Password',
+        title: 'Ubah Kata Sandi',
         centerTitle: true,
       ),
       body: Stack(
@@ -359,7 +359,7 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                           ),
                           const SizedBox(height: 16),
                           const Text(
-                            'Ganti Password Wajib',
+                            'Ubah Kata Sandi Wajib',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -380,6 +380,51 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                       ),
                     ),
                     const SizedBox(height: 32),
+
+                    // Password Requirements (moved above username)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 9, 57, 81)
+                            .withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: const Color.fromARGB(255, 9, 57, 81)
+                                .withOpacity(0.2)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Persyaratan Kata Sandi:',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color.fromARGB(255, 9, 57, 81),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          _buildRequirement(
+                              'Minimal 12 karakter', _hasMinLength),
+                          _buildRequirement('Huruf besar (A-Z)', _hasUppercase),
+                          _buildRequirement('Huruf kecil (a-z)', _hasLowercase),
+                          _buildRequirement('Angka (0-9)', _hasNumber),
+                          _buildRequirement(
+                              'Karakter khusus (!@#\$%^&*)', _hasSpecialChar),
+                          _buildRequirement(
+                              'Tidak boleh mengandung spasi', _hasNoSpaces),
+                          _buildRequirement(
+                              'Tidak boleh pola berurutan (abc, 123)',
+                              _hasNoSequential),
+                          _buildRequirement(
+                              'Tidak boleh karakter berulang (aaa)',
+                              _hasNoRepeating),
+                          _buildRequirement('Tidak boleh password umum/lemah',
+                              _hasNoCommonPassword),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
 
                     // Username (readonly)
                     TextFormField(
@@ -464,52 +509,7 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Password Requirements
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 9, 57, 81)
-                            .withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                            color: const Color.fromARGB(255, 9, 57, 81)
-                                .withOpacity(0.2)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Persyaratan Kata Sandi:',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Color.fromARGB(255, 9, 57, 81),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          _buildRequirement(
-                              'Minimal 12 karakter', _hasMinLength),
-                          _buildRequirement('Huruf besar (A-Z)', _hasUppercase),
-                          _buildRequirement('Huruf kecil (a-z)', _hasLowercase),
-                          _buildRequirement('Angka (0-9)', _hasNumber),
-                          _buildRequirement(
-                              'Karakter khusus (!@#\$%^&*)', _hasSpecialChar),
-                          _buildRequirement(
-                              'Tidak boleh mengandung spasi', _hasNoSpaces),
-                          _buildRequirement(
-                              'Tidak boleh pola berurutan (abc, 123)',
-                              _hasNoSequential),
-                          _buildRequirement(
-                              'Tidak boleh karakter berulang (aaa)',
-                              _hasNoRepeating),
-                          _buildRequirement('Tidak boleh password umum/lemah',
-                              _hasNoCommonPassword),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Confirm Password
+                    // Confirm Password (moved below new password)
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: !_showConfirmPassword,
@@ -578,8 +578,28 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                         ),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: ElevatedButton(
+                          child: ElevatedButton.icon(
                             onPressed: _isLoading ? null : _submitForm,
+                            icon: _isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  )
+                                : const Icon(Icons.save, size: 20),
+                            label: _isLoading
+                                ? const SizedBox.shrink()
+                                : const Text(
+                                    'Simpan',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color.fromARGB(255, 9, 57, 81),
@@ -590,23 +610,6 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                               ),
                               elevation: 0,
                             ),
-                            child: _isLoading
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  )
-                                : const Text(
-                                    'Ganti Password',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
                           ),
                         ),
                       ],
