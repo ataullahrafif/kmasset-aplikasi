@@ -12,7 +12,9 @@ import 'package:kmasset_aplikasi/home_page.dart'; // Added for HomePage
 import 'package:file_picker/file_picker.dart';
 
 class FormPengajuanTiketPage extends StatefulWidget {
-  const FormPengajuanTiketPage({super.key});
+  final Map<String, dynamic>? qrData;
+
+  const FormPengajuanTiketPage({super.key, this.qrData});
 
   @override
   State<FormPengajuanTiketPage> createState() => _FormPengajuanTiketPageState();
@@ -82,6 +84,95 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
     _deskripsiController.addListener(_onFieldChanged);
     _extensiController.addListener(_onFieldChanged);
     _nomorTeleponController.addListener(_onFieldChanged);
+
+    // Auto-fill form with QR data if available
+    if (widget.qrData != null) {
+      _fillFormWithQRData();
+      // Show notification that form was auto-filled
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showAutoFillNotification();
+      });
+    }
+  }
+
+  void _fillFormWithQRData() {
+    if (widget.qrData == null) return;
+
+    // Auto-fill form fields based on QR data
+    setState(() {
+      // Fill judul tiket with asset name
+      if (widget.qrData!['nama_asset'] != null) {
+        _judulTiketController.text =
+            'Pengajuan Tiket - ${widget.qrData!['nama_asset']}';
+      }
+
+      // Deskripsi tidak diisi otomatis agar user isi sendiri
+      // _deskripsiController.text = ''; // Biarkan kosong
+
+      // Set classification based on asset category
+      if (widget.qrData!['kategori'] != null) {
+        String kategori = widget.qrData!['kategori'].toString().toLowerCase();
+        if (kategori.contains('medis') || kategori.contains('alat')) {
+          _selectedClassification = 'CLS001'; // Perbaikan Alat Medis
+        } else if (kategori.contains('elektronik') ||
+            kategori.contains('laptop') ||
+            kategori.contains('komputer')) {
+          _selectedClassification = 'CLS003'; // Maintenance Rutin
+        } else {
+          _selectedClassification = 'CLS003'; // Default to Maintenance Rutin
+        }
+      }
+
+      // Set pusat kendali based on asset type
+      if (widget.qrData!['kategori'] != null) {
+        String kategori = widget.qrData!['kategori'].toString().toLowerCase();
+        if (kategori.contains('elektronik') ||
+            kategori.contains('laptop') ||
+            kategori.contains('komputer')) {
+          _selectedPusatKendali = 'ORG001'; // IT Support
+        } else if (kategori.contains('medis')) {
+          _selectedPusatKendali = 'ORG002'; // Logistik
+        } else {
+          _selectedPusatKendali = 'ORG004'; // Default to Umum
+        }
+      }
+    });
+
+    // Trigger auto-save after filling
+    _onFieldChanged();
+  }
+
+  void _showAutoFillNotification() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.qr_code_scanner, color: Colors.white, size: 20),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Judul dan klasifikasi telah diisi otomatis dari QR Code',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color.fromARGB(255, 9, 57, 81),
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(16),
+        action: SnackBarAction(
+          label: 'Tutup',
+          textColor: Colors.white,
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
   }
 
   void _onFieldChanged() {
@@ -520,18 +611,31 @@ class _FormPengajuanTiketPageState extends State<FormPengajuanTiketPage> {
         return;
       }
 
-      // TO DO: Ketika mengirim data ke backend, organisasi dan user diambil dari session
-      // final ticketData = {
-      //   'judul': _judulTiketController.text,
-      //   'deskripsi': _deskripsiController.text,
-      //   'klasifikasi': _selectedClassification,
-      //   'pusat_kendali': _selectedPusatKendali,
-      //   'organisasi': EmployeeData.organization, // Ambil dari session
-      //   'user': EmployeeData.employeeName, // Ambil dari session
-      //   'tanggal': _selectedDate?.toIso8601String(),
-      //   'ekstensi': _extensiController.text,
-      //   'nomor_telepon': _nomorTeleponController.text,
-      // };
+      // Prepare ticket data with QR code information
+      final ticketData = {
+        'judul': _judulTiketController.text,
+        'deskripsi': _deskripsiController.text,
+        'klasifikasi': _selectedClassification,
+        'pusat_kendali': _selectedPusatKendali,
+        'organisasi': 'EmployeeData.organization', // TO DO: Ambil dari session
+        'user': 'EmployeeData.employeeName', // TO DO: Ambil dari session
+        'tanggal': _selectedDate?.toIso8601String(),
+        'ekstensi': _extensiController.text,
+        'nomor_telepon': _nomorTeleponController.text,
+        'qr_data': widget.qrData, // Include QR code data
+        'images': _selectedImages.map((file) => file.path).toList(),
+        'pdf_files': _selectedPdfFiles.map((file) => file.path).toList(),
+      };
+
+      // TO DO: Send data to backend API
+      // Example API call:
+      // final response = await http.post(
+      //   Uri.parse('your-api-endpoint/tickets'),
+      //   headers: {'Content-Type': 'application/json'},
+      //   body: jsonEncode(ticketData),
+      // );
+
+      print('Ticket data to be sent: ${jsonEncode(ticketData)}');
 
       // Clear draft after successful submission
       _clearDraft();
