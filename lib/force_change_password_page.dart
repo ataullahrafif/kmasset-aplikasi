@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:kmasset_aplikasi/employee_data.dart';
-import 'package:kmasset_aplikasi/home_page.dart';
 import 'package:kmasset_aplikasi/login_page.dart';
 import 'utils/network_utils.dart';
 import 'widgets/modern_appbar.dart';
@@ -27,6 +26,7 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
   bool _showOldPassword = false;
   bool _showNewPassword = false;
   bool _showConfirmPassword = false;
+  bool _showAllPasswords = false; // New checkbox state
 
   // Password validation states
   bool _hasMinLength = false;
@@ -58,6 +58,31 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
       _hasNoRepeating = !_hasRepeatingPattern(password);
       _hasNoCommonPassword = !_isCommonPassword(password);
     });
+  }
+
+  // Update password visibility based on checkbox
+  void _updatePasswordVisibility() {
+    setState(() {
+      _showOldPassword = _showAllPasswords;
+      _showNewPassword = _showAllPasswords;
+      _showConfirmPassword = _showAllPasswords;
+    });
+  }
+
+  // Clear session and return to login
+  void _clearSessionAndReturnToLogin() async {
+    // Clear session data (simulate)
+    // In real implementation, this would clear SharedPreferences or other session storage
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+        (route) => false,
+      );
+    }
   }
 
   // Check for sequential patterns (abc, 123, etc.)
@@ -203,102 +228,137 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
       return;
     }
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      // Simulate API call with potential failure
+      await Future.delayed(const Duration(seconds: 2));
 
-    setState(() {
-      _isLoading = false;
-    });
+      // Simulate API response - in real implementation, this would come from your backend
+      // For demo purposes, we'll simulate a 95% success rate
+      bool isSuccess =
+          DateTime.now().millisecondsSinceEpoch % 20 != 0; // 95% success rate
 
-    // Show success dialog
-    if (mounted) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Container(
-            constraints: const BoxConstraints(
-              maxWidth: 320,
-              maxHeight: 180,
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 16, 91, 16)
-                            .withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Icon(
-                        Icons.check_circle,
-                        color: Color.fromARGB(255, 16, 91, 16),
-                        size: 18,
-                      ),
+      if (isSuccess) {
+        // Success case
+        setState(() {
+          _isLoading = false;
+        });
+
+        // Show success notification
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.white, size: 20),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Password berhasil diubah!',
+                      style: TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(width: 10),
-                    const Expanded(
-                      child: Text(
-                        'Password Berhasil Diubah',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 16, 91, 16),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Flexible(
-                  child: Text(
-                    'Password Anda telah berhasil diubah. Anda dapat melanjutkan menggunakan aplikasi.',
-                    style: TextStyle(fontSize: 14),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close dialog
-                      // Navigate to home page
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(initialIndex: 0),
-                        ),
-                        (route) => false,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 16, 91, 16),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                ],
+              ),
+              backgroundColor: const Color.fromARGB(255, 16, 91, 16),
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+
+          // Redirect to login page after a short delay
+          await Future.delayed(const Duration(seconds: 2));
+
+          if (mounted) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => const LoginPage(),
+              ),
+              (route) => false,
+            );
+          }
+        }
+      } else {
+        // Failure case
+        setState(() {
+          _isLoading = false;
+        });
+
+        // Show error notification
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Row(
+                children: [
+                  Icon(Icons.error_outline, color: Colors.white, size: 20),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Gagal mengubah password. Silakan coba lagi.',
+                      style: TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    child: const Text(
-                      'Lanjutkan',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 4),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              margin: const EdgeInsets.all(16),
+              action: SnackBarAction(
+                label: 'Tutup',
+                textColor: Colors.white,
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                },
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Handle any unexpected errors
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Terjadi kesalahan: ${e.toString()}',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
             ),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.all(16),
+            action: SnackBarAction(
+              label: 'Tutup',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -442,6 +502,33 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                     ),
                     const SizedBox(height: 16),
 
+                    // Show Password Checkbox
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: _showAllPasswords,
+                            onChanged: (value) {
+                              setState(() {
+                                _showAllPasswords = value ?? false;
+                              });
+                              _updatePasswordVisibility();
+                            },
+                            activeColor: const Color.fromARGB(255, 9, 57, 81),
+                          ),
+                          const Text(
+                            'Tampilkan Kata Sandi',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
                     // Old Password
                     TextFormField(
                       controller: _oldPasswordController,
@@ -548,17 +635,18 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: OutlinedButton(
+                          child: OutlinedButton.icon(
                             onPressed: _isLoading
                                 ? null
-                                : () {
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                        builder: (context) => const LoginPage(),
-                                      ),
-                                      (route) => false,
-                                    );
-                                  },
+                                : _clearSessionAndReturnToLogin,
+                            icon: const Icon(Icons.close, size: 20),
+                            label: const Text(
+                              'Batal',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.grey[600],
                               side: BorderSide(color: Colors.grey[300]!),
@@ -567,19 +655,14 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: const Text(
-                              'Batal',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
                           ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: _isLoading ? null : _submitForm,
+                            onPressed: (_isLoading || !_isPasswordValid())
+                                ? null
+                                : _submitForm,
                             icon: _isLoading
                                 ? const SizedBox(
                                     height: 20,
