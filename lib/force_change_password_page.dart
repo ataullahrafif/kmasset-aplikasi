@@ -502,33 +502,6 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Show Password Checkbox
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: _showAllPasswords,
-                            onChanged: (value) {
-                              setState(() {
-                                _showAllPasswords = value ?? false;
-                              });
-                              _updatePasswordVisibility();
-                            },
-                            activeColor: const Color.fromARGB(255, 9, 57, 81),
-                          ),
-                          const Text(
-                            'Tampilkan Kata Sandi',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
                     // Old Password
                     TextFormField(
                       controller: _oldPasswordController,
@@ -628,6 +601,33 @@ class _ForceChangePasswordPageState extends State<ForceChangePasswordPage> {
                         }
                         return null;
                       },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Show Password Checkbox (moved below confirm password)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: _showAllPasswords,
+                            onChanged: (value) {
+                              setState(() {
+                                _showAllPasswords = value ?? false;
+                              });
+                              _updatePasswordVisibility();
+                            },
+                            activeColor: const Color.fromARGB(255, 9, 57, 81),
+                          ),
+                          const Text(
+                            'Tampilkan Kata Sandi',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 32),
 
